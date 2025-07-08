@@ -16,7 +16,7 @@ def generate_greedy_full_coverage_schedule(participants: List[int], n: int, m: i
     for _ in range(max_rounds):
         best_tables = None
         best_new_pairs = -1
-        # Пробую несколько случайных рассадок и выбераю лучшую
+        # Пробую несколько случайных рассадок и выбираю лучшую
         for _ in range(attempts):
             random.shuffle(participants)
             tables = [participants[i*m:(i+1)*m] for i in range(n)]
