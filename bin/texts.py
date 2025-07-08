@@ -5,14 +5,17 @@ registration_request_sent = 'Ваша заявка будет рассмотре
 session_already_started = "Сессия уже началась, регистрация закрыта"
 user_left_session = "Вы покинули нетворкинг сессию"
 registration_denied = "Ваш запрос был отклонен"
-
+change_tables_count = "Введите число столов"
+change_seats_count = "Введите число мест за столом"
+invalid_num_value = "Введенное значение не является числовым. Введите число"
+user_is_happy = "Вы зарегистрированы на мероприятие"
 
 def current_table_of_user(table_num: int):
     return f"Подходите к столу №{table_num}"
 
 
 def welcome_admin(name: str):
-    return f"Добро пожаловать в админ-панель.\nМеню настроек - /settings\nНачать первый раунд сессии - /startsession"
+    return f"Добро пожаловать в админ-панель.\nПросмотреть текущие настройки - /showsettings\nИзменить настройки мероприятия - /changesettings\nНачать первый раунд сессии - /startsession"
 
 
 def admin_chat_new_request(name: str):
