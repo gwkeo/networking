@@ -1,6 +1,9 @@
 import telebot
+from telebot import types
 import json
-import texts, markups
+import bin.texts as texts, bin.markups as markups
+import bin.session as session
+from bin import models
 
 
 config_file = open('config.json', 'r')
@@ -9,33 +12,59 @@ config_file.close()
 
 
 bot = telebot.TeleBot(token=config['api_token'])
-users = []
+users = list()
+admin_chat_id = config['admin_chat_id']
 session_started = False
 
 
+settings = models.Settings(5,4)
+
+
 @bot.message_handler(commands=['start'])
-def handle_start(message):
-    print(markups.register_markup)
-    bot.send_message(chat_id=message.chat.id, text=texts.start, reply_markup=markups.register_markup)
+def handle_start(message: types.Message):
+    if message.chat.id == admin_chat_id:
+        bot.send_message(chat_id=admin_chat_id, text=texts.welcome_admin(message.chat.first_name))
+        return
+    bot.send_message(chat_id=message.chat.id, text=texts.start + f" {message.chat.id}", reply_markup=markups.register_markup)
+
+
+@bot.message_handler(commands=['settings'])
+def handle_settings(message: types.Message):
+    bot.send_message(chat_id=message.chat.id, text=texts.current_settings(settings=settings))
+
+
+@bot.message_handler(commands=['startsession'])
+def handle_start_session(message: types.Message):
+    a = session.generate_greedy_full_coverage_schedule(users, settings.tables_count, settings.seats_count)
+    bot.send_message(chat_id=message.chat.id, text=str(a))
+    for i in a:
+        for j in users:
+            bot.send_message(chat_id=j, text=texts.current_table_of_user(table_num=i[j]))
 
 
 @bot.callback_query_handler()
-def handle_callback_query(callback):
-    match(callback.data):
+def handle_callback_query(callback: types.CallbackQuery):
+    match(callback.data.split(':')[0]):
         case markups.CallbackTypes.register.value:
             if not session_started:
+                bot.send_message(
+                    chat_id=admin_chat_id, 
+                    text=texts.admin_chat_new_request(callback.message.chat.first_name),
+                    reply_markup=markups.request_actions(callback.message.chat.id)
+                )
+
                 bot.edit_message_text(
-                    chat_id=callback.message.chat.id, 
+                    chat_id=callback.message.chat.id,
                     message_id=callback.message.id,
-                    text=texts.current_settings(len(users)),
-                    reply_markup=markups.active_session_markup
+                    text=texts.registration_request_sent,
+                    reply_markup=markups.leave_session
                 )
 
             else:
                 bot.edit_message_text(
                     chat_id=callback.message.chat.id, 
                     message_id=callback.message.id,
-                    text=texts.sessiong_already_started
+                    text=texts.session_already_started
                 )
 
         case markups.CallbackTypes.leave_session.value:
@@ -44,6 +73,35 @@ def handle_callback_query(callback):
                 message_id=callback.message.id,
                 text=texts.user_left_session, 
                 reply_markup=markups.register_markup
+            )
+        case markups.CallbackTypes.accept_new_user.value:
+            bot.edit_message_text(
+                    chat_id=callback.message.chat.id, 
+                    message_id=callback.message.id,
+                    text=texts.user_accepted_log(callback.message.text),
+            )
+
+            id = callback.data.split(':')[1]
+
+            users.append(id)
+
+            bot.send_message(
+                chat_id=id,
+                text=texts.current_settings(settings=settings),
+                reply_markup=markups.leave_session
+            )
+        case markups.CallbackTypes.deny_new_user.value:
+            bot.edit_message_text(
+                    chat_id=callback.message.chat.id, 
+                    message_id=callback.message.id,
+                    text=texts.user_declined_log(callback.message.text),
+            )
+
+            id = callback.data.split(':')[1]
+
+            bot.send_message(
+                chat_id=id,
+                text=texts.registration_denied,
             )
 
 
