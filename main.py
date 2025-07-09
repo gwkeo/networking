@@ -58,7 +58,7 @@ def handle_start_session(message: types.Message):
     bot.send_message(chat_id=message.chat.id, text=str(a))
     for i in a:
         for j in users:
-            bot.send_message(chat_id=j, text=texts.current_table_of_user(table_num=i[j]))
+            bot.send_message(chat_id=j, text=texts.current_table_of_user(table_num=i[j]), reply_markup=markups.leave_session)
 
 
 @bot.message_handler()
@@ -100,8 +100,7 @@ def handle_callback_query(callback: types.CallbackQuery):
                 bot.edit_message_text(
                     chat_id=callback.message.chat.id,
                     message_id=callback.message.id,
-                    text=texts.registration_request_sent,
-                    reply_markup=markups.leave_session
+                    text=texts.registration_request_sent
                 )
 
             else:
@@ -112,12 +111,16 @@ def handle_callback_query(callback: types.CallbackQuery):
                 )
 
         case markups.CallbackTypes.leave_session.value:
+
+            users.remove(str(callback.message.chat.id))
+
             bot.edit_message_text(
                 chat_id=callback.message.chat.id, 
                 message_id=callback.message.id,
                 text=texts.user_left_session, 
                 reply_markup=markups.register_markup
             )
+
         case markups.CallbackTypes.accept_new_user.value:
             bot.edit_message_text(
                     chat_id=callback.message.chat.id, 
