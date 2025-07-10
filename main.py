@@ -121,6 +121,8 @@ def handle_callback_query(callback: types.CallbackQuery):
                 reply_markup=markups.register_markup
             )
 
+            bot.send_message(chat_id=admin_chat_id, text=f"Пользователь {callback.message.chat.first_name} покинул сессию")
+
         case markups.CallbackTypes.accept_new_user.value:
             bot.edit_message_text(
                     chat_id=callback.message.chat.id, 
