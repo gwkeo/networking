@@ -1,0 +1,6 @@
+header {
+    position: fixed;
+    width: 100vw; 
+    height: 6vh;          /* Устанавливаем высоту элемента */
+    background-color: #25272F; /* Устанавливаем цвет фона */
+}
