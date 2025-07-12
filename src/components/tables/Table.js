@@ -36,13 +36,13 @@ export default function Table(props) {
                     })}
                 </div>
             </div>
-            <div style={{color: 'white', textAlign: 'left', fontSize: '14px', alignSelf: 'center'}}>
+            {/* <div style={{color: 'white', textAlign: 'left', fontSize: '14px', alignSelf: 'center'}}>
                 <ol style={{listStyle: 'none'}}>
                     {names.map((name, index) => (
                         <li key={index} >{props.table_index}.{index + 1 }     { name}</li>
                     ))}
                 </ol>
-            </div>
+            </div> */}
            
         </div>
         </table_container>

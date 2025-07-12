@@ -14,15 +14,19 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 75vw; 
+    width: 50vw; 
 }
 
-/* .names{
+.names{
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     width: 25vw; 
-} */
+    color: white;
+    text-align: left;
+    font-size: 11px;
+    align-self: center;
+}
 
 .dashboard_text {
     display: flex;
@@ -38,7 +42,7 @@
     top: 10vh;
     margin-left: 4vw; 
     width: 75vw; 
-    height: 82vh;          /* Устанавливаем высоту элемента */
+    height: 85vh;          /* Устанавливаем высоту элемента */
     background-color: #25272F; /* Устанавливаем цвет фона */
     border-radius: 10px; 
 }

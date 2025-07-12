@@ -6,7 +6,7 @@
     border-radius: 10px;
     top: 10vh;
     margin-left: 5vw;
-    margin-bottom: 8.6vh;
+    margin-bottom: 9.3vh;
     display: flex;          /* Используем Flexbox для выравнивания */
     flex-direction: column; /* Элементы будут располагаться вертикально */
     justify-content: center; /* Центрируем содержимое по вертикали */

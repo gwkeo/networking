@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import classes from "./Dashboard.module.css"
 import Metric from "../metrics/Metrics";
 import Table from "../tables/Table";
 
 export default function Dashboard(){
-    //что должно будет передаватся с бэка
-    //const num_tables = 10; //количество столов - пока задано статически, потом будет передаватся с бэка
-    const [NumTables, setNumTables] =useState(7);
     const maxBlocksPerPage = 4;//на экране максимально можно отобразить 4 стола
-    //const num_tables = Numtables;
-    const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
 
+    //алгоритм для отображения по 4 стола на странице
+    const [NumTables, setNumTables] =useState(10);
+    const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+    
     const calculateBlocksToDisplay = (currentIndex) => { //сколько блоков отображать на текущей странице
         return Math.min(maxBlocksPerPage, NumTables - currentIndex); // Возвращаем количество блоков для отображения
     };
@@ -28,6 +27,19 @@ export default function Dashboard(){
 
     const blocksToDisplay = calculateBlocksToDisplay(currentBlockIndex);
 
+    //подгрузка данных о пользователях в текущем раунде
+    const [people, setPeople] = useState([])
+
+    const fetchPeople = useCallback(async () => {
+        const response = await fetch('https://dummyjson.com/c/8a76-dec3-4502-8cfd')
+        const people = await response.json()
+        setPeople(people)
+    }, [])
+
+    useEffect(() => {
+        fetchPeople()
+    }, [fetchPeople])
+
     return (
         <section className={classes.container}>
             <div className={classes.dashboard}>
@@ -37,13 +49,26 @@ export default function Dashboard(){
                 {/* table_index -номер стола, рассчитывается здесь,
                     num_tables- число столов, передается с бэка,
                     также с бэка надо передавать список участников и число мест за столами */}
-                <div className={classes.tables}>
-                    { [...Array(blocksToDisplay)].map((item, index) => <Table key={index} 
-                    table_index={(currentBlockIndex+1)+index} num_tables={NumTables} 
-                    num_seats={6}/> ) } 
+                <div style={{display: 'flex', flexDirection: 'row'}}>
+                    <div className={classes.tables}>
+                        { [...Array(blocksToDisplay)].map((item, index) => <Table key={index} 
+                        table_index={(currentBlockIndex+1)+index} num_tables={NumTables} 
+                        num_seats={7}/> ) } 
+                    </div>
+                    <div className={classes.names}>
+                        <ol style={{ listStyle: 'none' }}>
+                            {people
+                                .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
+                                .map((person, index) => (
+                                    <li key={index}>
+                                        <a style={{fontWeight: 'bold'}}>{person.name} - {person.table_index}.{person.seat_num}</a>
+                                    </li>
+                                ))}
+                        </ol>
+                    </div>
                 </div>
             </div>
-            
+
             {/* в этот блок с метриками с бэка передаём процент уникальных встреч, номер раунда, число участников и число столов */}
             <div className={classes.metrics}>
                 <Metric/>           

@@ -2,9 +2,8 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    height: 38vh;
-    /* width: 25vw; */
-    width: 37vw;
+    height: 39vh;
+    width: 25vw; 
 }
 
 .circles {
