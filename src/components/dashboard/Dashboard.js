@@ -5,9 +5,18 @@ import Table from "../tables/Table";
 
 export default function Dashboard(){
     const maxBlocksPerPage = 4;//на экране максимально можно отобразить 4 стола
-
-    //алгоритм для отображения по 4 стола на странице
     const [NumTables, setNumTables] =useState(10);
+    const [metrics, setMetrics] = useState([])
+
+    const fetchMetrics = useCallback(async () => {
+        const response = await fetch('https://dummyjson.com/c/2d00-a46b-4912-b505')
+        const metrics = await response.json()
+        setMetrics(metrics)
+    }, [])
+    useEffect(() => {
+        fetchMetrics()
+    }, [fetchMetrics])
+    //алгоритм для отображения по 4 стола на странице    
     const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
     
     const calculateBlocksToDisplay = (currentIndex) => { //сколько блоков отображать на текущей странице
@@ -20,7 +29,7 @@ export default function Dashboard(){
                 const newIndex = prevIndex + maxBlocksPerPage;
                 return newIndex >= NumTables ? 0 : newIndex; // Если превышен NumTables, начинаем заново
             });
-        }, 7000);
+        }, 1000);
         
         return () => clearInterval(interval);
     }, []);
@@ -53,7 +62,7 @@ export default function Dashboard(){
                     <div className={classes.tables}>
                         { [...Array(blocksToDisplay)].map((item, index) => <Table key={index} 
                         table_index={(currentBlockIndex+1)+index} num_tables={NumTables} 
-                        num_seats={7}/> ) } 
+                        num_seats={metrics.map((metric) => (metric.seats[currentBlockIndex+index]))}/> ) } 
                     </div>
                     <div className={classes.names}>
                         <ol style={{ listStyle: 'none' }}>
@@ -71,7 +80,12 @@ export default function Dashboard(){
 
             {/* в этот блок с метриками с бэка передаём процент уникальных встреч, номер раунда, число участников и число столов */}
             <div className={classes.metrics}>
-                <Metric/>           
+                <Metric  key={1} 
+                unique_meetings={metrics.map((metric) => (metric.persent_unique_meetings))}
+                round={metrics.map((metric) => (metric.round_num))}
+                people={metrics.map((metric) => (metric.people_num))}
+                tables={metrics.map((metric) => (metric.tables))}
+                />           
             </div>
         </section>
     )

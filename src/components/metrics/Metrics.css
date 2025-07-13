@@ -18,7 +18,7 @@
     flex-direction: column; /* Элементы будут располагаться вертикально */
     width: 70%;          /* Занимает всю ширину родительского блока */
     height: 80%;
-    margin-left: 1vw;
+    margin: 1vw;
     text-align: left;
     justify-content: space-between; /* Распределяем пространство между элементами */
 }

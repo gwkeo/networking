@@ -4,7 +4,6 @@ import './Table.css';
 export default function Table(props) {
     const radius = 70; // подумать об относительности размера
     const smallCircleRadius = 20; // радиус маленьких кружков
-    const names = ["Ульяна", "Всеволод", "Рахман", "Екатерина", "Елена", "Иванка"];
 
     return (
         <table_container>

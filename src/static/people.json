@@ -1,0 +1,352 @@
+[
+  {
+    "table_index": 4,
+    "seat_num": 3,
+    "name": "Александров Иван"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 5,
+    "name": "Борисов Алексей"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 6,
+    "name": "Васнецова Анна"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 2,
+    "name": "Григорьев Петр"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 4,
+    "name": "Дмитриева Елена"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 7,
+    "name": "Егоров Дмитрий"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 1,
+    "name": "Жукова Ольга"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 2,
+    "name": "Зайцева Мария"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 4,
+    "name": "Иванов Сергей"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 6,
+    "name": "Кузнецова Анастасия"
+  },
+  {
+    "table_index": 4,
+    "seat_num": 1,
+    "name": "Лебедев Артем"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 3,
+    "name": "Михайлов Павел"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 5,
+    "name": "Николаева Татьяна"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 7,
+    "name": "Орлов Виктор"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 2,
+    "name": "Петрова Светлана"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 4,
+    "name": "Романов Андрей"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 6,
+    "name": "Сергеева Надежда"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 1,
+    "name": "Тарасов Игорь"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 3,
+    "name": "Устинова Юлия"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 5,
+    "name": "Федоров Максим"
+  },
+  {
+    "table_index": 4,
+    "seat_num": 7,
+    "name": "Харитонова Виктория"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 2,
+    "name": "Цветков Александр"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 4,
+    "name": "Чернышев Денис"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 6,
+    "name": "Шарова Екатерина"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 1,
+    "name": "Щукин Вадим"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 3,
+    "name": "Яковлева Людмила"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 5,
+    "name": "Антонов Кирилл"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 7,
+    "name": "Белова Ангелина"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 2,
+    "name": "Громов Станислав"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 4,
+    "name": "Данилова Вероника"
+  },
+  {
+    "table_index": 4,
+    "seat_num": 6,
+    "name": "Ефимова Дарья"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 1,
+    "name": "Жданов Артур"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 3,
+    "name": "Золотарева Ксения"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 5,
+    "name": "Ильин Олег"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 7,
+    "name": "Ковалева Ирина"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 2,
+    "name": "Ларин Николай"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 4,
+    "name": "Морозова Тамара"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 6,
+    "name": "Новиков Геннадий"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 1,
+    "name": "Осипова Алла"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 3,
+    "name": "Павлов Руслан"
+  },
+  {
+    "table_index": 4,
+    "seat_num": 5,
+    "name": "Рыжова Валерия"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 7,
+    "name": "Семенов Валентин"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 2,
+    "name": "Титова Ульяна"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 4,
+    "name": "Уваров Константин"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 6,
+    "name": "Фролова Галина"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 1,
+    "name": "Хохлов Евгений"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 3,
+    "name": "Царева Лидия"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 5,
+    "name": "Чижов Борис"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 7,
+    "name": "Широков Валерий"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 2,
+    "name": "Щербакова Олеся"
+  },
+  {
+    "table_index": 4,
+    "seat_num": 4,
+    "name": "Яшин Роман"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 6,
+    "name": "Андреева София"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 1,
+    "name": "Баранов Владислав"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 3,
+    "name": "Воронова Элина"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 5,
+    "name": "Гусев Михаил"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 6,
+    "name": "Дорофеев Аркадий"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 2,
+    "name": "Еремина Наталья"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 4,
+    "name": "Журавлев Степан"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 5,
+    "name": "Зимина Валентина"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 7,
+    "name": "Королев Артем"
+  },
+  {
+    "table_index": 4,
+    "seat_num": 2,
+    "name": "Лапина Инна"
+  },
+  {
+    "table_index": 7,
+    "seat_num": 4,
+    "name": "Маслов Владимир"
+  },
+  {
+    "table_index": 2,
+    "seat_num": 7,
+    "name": "Нестерова Лариса"
+  },
+  {
+    "table_index": 9,
+    "seat_num": 1,
+    "name": "Поляков Антон"
+  },
+  {
+    "table_index": 1,
+    "seat_num": 3,
+    "name": "Рогова Елена"
+  },
+  {
+    "table_index": 5,
+    "seat_num": 5,
+    "name": "Савельев Григорий"
+  },
+  {
+    "table_index": 10,
+    "seat_num": 7,
+    "name": "Трофимова Алена"
+  },
+  {
+    "table_index": 3,
+    "seat_num": 3,
+    "name": "Ушаков Денис"
+  },
+  {
+    "table_index": 6,
+    "seat_num": 6,
+    "name": "Фомичева Кристина"
+  },
+  {
+    "table_index": 8,
+    "seat_num": 1,
+    "name": "Герасимов Илья"
+  }
+]
