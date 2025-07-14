@@ -9,8 +9,10 @@ change_tables_count = "Введите число столов"
 change_seats_count = "Введите число мест за столом"
 invalid_num_value = "Введенное значение не является числовым. Введите число"
 user_is_happy = "Вы зарегистрированы на мероприятие"
+unavailable_session = "Сессия недоступна"
+unable_to_start_session = "Не удалось начать сессию"
 
-def current_table_of_user(table_num: int):
+def show_users_current_table_num(table_num: int):
     return f"Подходите к столу №{table_num}"
 
 
@@ -32,3 +34,6 @@ def user_accepted_log(message: str):
 
 def user_declined_log(message: str):
     return f"{message}. Отклонен"
+
+def user_left_session_log(name: str):
+    return f"{name} покинул сессию"
