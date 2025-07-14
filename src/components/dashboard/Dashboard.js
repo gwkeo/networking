@@ -3,13 +3,13 @@ import classes from "./Dashboard.module.css"
 import Metric from "../metrics/Metrics";
 import Table from "../tables/Table";
 
-export default function Dashboard(){
+export default function Dashboard(props){
     const maxBlocksPerPage = 4;//на экране максимально можно отобразить 4 стола
-    const [NumTables, setNumTables] =useState(10);
+    const [numTables, setNumTables] =useState(props.num);
+    const NumTables=props.num
     const [metrics, setMetrics] = useState([])
-
     const fetchMetrics = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/2d00-a46b-4912-b505')
+        const response = await fetch('https://dummyjson.com/c/210e-986a-455d-90f7')
         const metrics = await response.json()
         setMetrics(metrics)
     }, [])
@@ -29,7 +29,7 @@ export default function Dashboard(){
                 const newIndex = prevIndex + maxBlocksPerPage;
                 return newIndex >= NumTables ? 0 : newIndex; // Если превышен NumTables, начинаем заново
             });
-        }, 1000);
+        }, 7000);
         
         return () => clearInterval(interval);
     }, []);
@@ -40,7 +40,7 @@ export default function Dashboard(){
     const [people, setPeople] = useState([])
 
     const fetchPeople = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/8a76-dec3-4502-8cfd')
+        const response = await fetch('https://dummyjson.com/c/ba35-9e87-4cc8-bddb')
         const people = await response.json()
         setPeople(people)
     }, [])
@@ -48,6 +48,10 @@ export default function Dashboard(){
     useEffect(() => {
         fetchPeople()
     }, [fetchPeople])
+
+    useEffect(() => {
+
+    }, []);
 
     return (
         <section className={classes.container}>
