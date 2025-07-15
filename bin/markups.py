@@ -38,4 +38,4 @@ user_ready = quick_markup({
     'Выйти': {
         'callback_data': f"{CallbackTypes.leave_session.value}"
     }
-})
+}, row_width=2)

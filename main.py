@@ -66,15 +66,16 @@ def handle_start_session(message: types.Message):
         )
     
     round_dict = scheduler.generate_next_round()
+    print(users)
 
     if round_dict is None:
         bot.send_message(chat_id=admin_chat_id, text=texts.unable_to_start_session)
         return
 
     for participant, table in round_dict.items():
-        if participant == 442047289:
+        if int(participant) == 442047289:
             bot.send_message(
-                chat_id=participant,
+                chat_id=int(participant),
                 text=texts.show_users_current_table_num(table_num=table),
                 reply_markup=markups.user_ready
             )
