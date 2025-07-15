@@ -79,9 +79,12 @@ def handle_start_session(message: types.Message):
                 text=texts.show_users_current_table_num(table_num=table),
                 reply_markup=markups.user_ready
             )
+
+        print(participant, table)
     
     stats = scheduler.get_session_stats()
     print(stats)
+    print(scheduler.get_all_pairs())
 
     round_num += 1
 
@@ -106,12 +109,14 @@ def handle_next_round(message: types.Message):
         return
 
     for participant, table in round_dict.items():
-        if participant == 442047289:
+        if int(participant) == 442047289:
             bot.send_message(
-                chat_id=participant, 
+                chat_id=int(participant), 
                 text=texts.show_users_current_table_num(table_num=table),
                 reply_markup=markups.user_ready
             )
+        
+        print(participant, table)
 
     round_num += 1
 
