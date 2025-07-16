@@ -20,12 +20,14 @@ class State(Enum):
 
 bot = telebot.TeleBot(token=config['api_token'])
 users = list()
+last_users = list()
 admin_chat_id = config['admin_chat_id']
 session_started = False
 settings = models.Settings(5,4)
 state = State.default
 round_num = 1
 adminchatlastmessage = 0
+scheduler = session.SessionScheduler(users, 1,1)
 
 @bot.message_handler(commands=['start'])
 def handle_start(message: types.Message):
@@ -58,6 +60,8 @@ def handle_start_session(message: types.Message):
         return
     
     global round_num
+    global scheduler
+    global last_users
     
     scheduler = session.SessionScheduler(
         participants=users, 
@@ -88,6 +92,8 @@ def handle_start_session(message: types.Message):
 
     round_num += 1
 
+    last_users = users
+
 
 @bot.message_handler(commands=['nextround'])
 def handle_next_round(message: types.Message):
@@ -95,13 +101,16 @@ def handle_next_round(message: types.Message):
         return
     
     global round_num
-    
-    scheduler = session.SessionScheduler(
-        participants=users, 
-        n=settings.tables_count,
-        m=settings.seats_count
+    global scheduler
+    global last_users
+
+    if users != last_users:
+        scheduler = session.SessionScheduler(
+            participants=users, 
+            n=settings.tables_count,
+            m=settings.seats_count
         )
-    
+
     round_dict = scheduler.generate_next_round()
 
     if round_dict is None:
@@ -124,6 +133,8 @@ def handle_next_round(message: types.Message):
         chat_id=admin_chat_id,
         text=scheduler.get_session_stats()
     )
+
+    last_users = users
 
 @bot.message_handler(commands=['addparticipant'])
 def handle_add_participant(message: types.Message):
