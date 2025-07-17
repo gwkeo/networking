@@ -1,8 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Table.css';
 
 export default function Table(props) {
-    const radius = 70; // подумать об относительности размера
+    const [people, setPeople] = useState([])
+
+    const fetchPeople = useCallback(async () => {
+        const response = await fetch('https://dummyjson.com/c/7101-d292-4b30-8058')
+        const people = await response.json()
+        setPeople(people)
+    }, [])
+
+    useEffect(() => {
+        fetchPeople()
+    }, [fetchPeople])
+
+    const radius = 60; // подумать об относительности размера
     const smallCircleRadius = 20; // радиус маленьких кружков
 
     return (
@@ -15,6 +27,9 @@ export default function Table(props) {
                     const angle = (i / props.num_seats) * 2 * Math.PI - Math.PI / 2; // угол в радианах
                     const x = radius + radius * Math.cos(angle) - smallCircleRadius; // координата X
                     const y = radius + radius * Math.sin(angle) - smallCircleRadius; // координата Y
+                    const filteredNames = people
+                        .filter(person => person.table_index === props.table_index)
+                        .map(person => person.initials);
                     return (
                         <div
                                 key={i}
@@ -29,7 +44,7 @@ export default function Table(props) {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <span className="circle-number" style={{fontSize: '10px'}}>{props.table_index}.{i+1}</span>
+                                <span className="circle-number" style={{fontSize: '10px'}}>{filteredNames[i]}</span>
                             </div>
                     );
                     })}

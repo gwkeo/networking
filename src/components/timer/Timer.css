@@ -1,0 +1,9 @@
+.metric-content {
+    display: flex;         /* Используем Flexbox для внутреннего содержимого */
+    flex-direction: column; /* Элементы будут располагаться вертикально */
+    width: 70%;          /* Занимает всю ширину родительского блока */
+    height: 80%;
+    margin: 1vw;
+    text-align: left;
+    justify-content: space-between; /* Распределяем пространство между элементами */
+}

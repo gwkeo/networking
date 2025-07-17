@@ -7,7 +7,7 @@ import './App.css';
 export default function App() {
     const [metrics, setMetrics] = useState([])
     const fetchMetrics = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/210e-986a-455d-90f7')
+        const response = await fetch('https://dummyjson.com/c/0270-25ea-471a-9da5')
         const metrics = await response.json()
         setMetrics(metrics)
     }, [])

@@ -5,11 +5,11 @@ import Table from "../tables/Table";
 
 export default function Dashboard(props){
     const maxBlocksPerPage = 4;//на экране максимально можно отобразить 4 стола
-    const [numTables, setNumTables] =useState(props.num);
+    //const [numTables, setNumTables] =useState(props.num);
     const NumTables=props.num
     const [metrics, setMetrics] = useState([])
     const fetchMetrics = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/210e-986a-455d-90f7')
+        const response = await fetch('https://dummyjson.com/c/0270-25ea-471a-9da5')
         const metrics = await response.json()
         setMetrics(metrics)
     }, [])
@@ -32,7 +32,7 @@ export default function Dashboard(props){
         }, 7000);
         
         return () => clearInterval(interval);
-    }, []);
+    }, [NumTables]);
 
     const blocksToDisplay = calculateBlocksToDisplay(currentBlockIndex);
 
@@ -40,7 +40,7 @@ export default function Dashboard(props){
     const [people, setPeople] = useState([])
 
     const fetchPeople = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/ba35-9e87-4cc8-bddb')
+        const response = await fetch('https://dummyjson.com/c/7101-d292-4b30-8058')
         const people = await response.json()
         setPeople(people)
     }, [])
@@ -50,8 +50,15 @@ export default function Dashboard(props){
     }, [fetchPeople])
 
     useEffect(() => {
-
-    }, []);
+        const interval = setInterval(() => {
+            setCurrentBlockIndex((prevIndex) => {
+                const newIndex = prevIndex + maxBlocksPerPage;
+                return newIndex >= NumTables ? 0 : newIndex; // Если превышен NumTables, начинаем заново
+            });
+        }, 7000);
+        
+        return () => clearInterval(interval);
+    }, [NumTables]);
 
     return (
         <section className={classes.container}>
@@ -69,15 +76,33 @@ export default function Dashboard(props){
                         num_seats={metrics.map((metric) => (metric.seats[currentBlockIndex+index]))}/> ) } 
                     </div>
                     <div className={classes.names}>
-                        <ol style={{ listStyle: 'none' }}>
-                            {people
+                        <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
+                        {people
                                 .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
                                 .map((person, index) => (
-                                    <li key={index}>
-                                        <a style={{fontWeight: 'bold'}}>{person.name} - {person.table_index}.{person.seat_num}</a>
+                                    <li style={{ listStyle: 'none' }} key={index}>
+                                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>{person.initials}</a>
                                     </li>
                                 ))}
-                        </ol>
+                        </div>
+                        <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
+                        {people
+                                .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
+                                .map((person, index) => (
+                                    <li style={{ listStyle: 'none' }} key={index}>
+                                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>{person.name}</a>
+                                    </li>
+                                ))}
+                        </div>
+                        <div className={classes.column}>
+                        {people
+                                .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
+                                .map((person, index) => (
+                                    <li style={{ listStyle: 'none' }} key={index}>
+                                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>{person.table_index}</a>
+                                    </li>
+                                ))}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,6 +114,8 @@ export default function Dashboard(props){
                 round={metrics.map((metric) => (metric.round_num))}
                 people={metrics.map((metric) => (metric.people_num))}
                 tables={metrics.map((metric) => (metric.tables))}
+                round_time={metrics.map((metric) => (metric.round_time))}
+                break_time={metrics.map((metric) => (metric.break_time))}
                 />           
             </div>
         </section>
