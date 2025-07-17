@@ -9,7 +9,7 @@ export default function Dashboard(props){
     const NumTables=props.num
     const [metrics, setMetrics] = useState([])
     const fetchMetrics = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/0270-25ea-471a-9da5')
+        const response = await fetch('https://dummyjson.com/c/f074-2f85-4ab6-ad95')
         const metrics = await response.json()
         setMetrics(metrics)
     }, [])
@@ -111,6 +111,7 @@ export default function Dashboard(props){
             <div className={classes.metrics}>
                 <Metric  key={1} 
                 unique_meetings={metrics.map((metric) => (metric.persent_unique_meetings))}
+                current_round={metrics.map((metric) => (metric.current_round))}
                 round={metrics.map((metric) => (metric.round_num))}
                 people={metrics.map((metric) => (metric.people_num))}
                 tables={metrics.map((metric) => (metric.tables))}

@@ -12,8 +12,8 @@ export default function Metric(props){
         </div>
         <div className='metric'>
             <div className='metric-content'>
-                <a style={{ color: 'white', fontSize: '12px', }}>Номер раунда</a>
-                <a style={{ color: 'white', fontSize: '19px', }}>{props.round}</a>
+                <a style={{ color: 'white', fontSize: '12px', }}>Раунд</a>
+                <a style={{ color: 'white', fontSize: '19px', }}>{props.current_round} / {props.round}</a>
             </div>
         </div>
         <div className='metric'>
@@ -24,8 +24,8 @@ export default function Metric(props){
         </div>
         <div className='metric'>
             <div className='metric-content'>
-                <a style={{ color: 'white', fontSize: '12px', }}>Процент уникальных встреч</a>
-                <a style={{ color: 'white', fontSize: '19px', }}>{props.unique_meetings}</a>
+                <a style={{ color: 'white', fontSize: '12px', }}>Количество незнакомых людей</a>
+                <a style={{ color: 'white', fontSize: '15px', }}>{props.unique_meetings}</a>
             </div>
         </div>
         </metric>

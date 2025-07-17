@@ -34,7 +34,7 @@ const Timer = ({ round_time, break_time }) => {
 
   return (
     <div className='metric-content'>
-      <a style={{ color: 'white', fontSize: '12px', }}>{isRoundActive ? 'Раунд' : 'Перерыв'}</a>
+      <a style={{ color: 'white', fontSize: '12px', }}>{isRoundActive ? 'До конца раунда осталось' : 'До конца перерыва осталось'}</a>
       <a style={{ color: 'white', fontSize: '19px', }}>{minutes}:{seconds}</a>
     </div>
   );
