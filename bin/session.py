@@ -1,6 +1,6 @@
 import random
 import itertools
-from typing import List, Dict, Set, FrozenSet, Tuple, Optional
+from typing import List, Dict, Set, FrozenSet, Optional
 
 
 random_seed_num = 42
@@ -22,6 +22,10 @@ class SessionScheduler:
         self.rounds = []
         random.seed(random_seed_num)
     
+    def add_participant(self, new_participant: int):
+        self.participants.append(new_participant)
+        self.p = len(self.participants)
+    
     def add_participants(self, new_participants: List[int]):
         """
         Добавить новых участников в сессию
@@ -31,6 +35,10 @@ class SessionScheduler:
         self.participants.extend(new_participants)
         self.p = len(self.participants)
     
+    def remove_participant(self, participant: int):
+        self.participants.remove(participant)
+        self.p = len(self.participants)
+
     def get_all_pairs(self) -> Set[FrozenSet[int]]:
         """
         Получить все возможные пары участников
@@ -64,8 +72,10 @@ class SessionScheduler:
             shuffled_participants = self.participants.copy()
             random.shuffle(shuffled_participants)
             
-            # Создаем столы
-            tables = [shuffled_participants[i*self.m:(i+1)*self.m] for i in range(self.n)]
+            num_participants = len(self.participants)
+            max_tables = max(1, num_participants // 2)
+            tables_to_use = min(self.n, max_tables)
+            tables = split_evenly(shuffled_participants, tables_to_use)
             
             # Подсчитываем новые пары
             new_pairs = set()
@@ -232,6 +242,14 @@ class SessionScheduler:
             print(f"\nВсе пары покрыты!")
 
 
+def split_evenly(lst, n):
+    """
+    Делит список lst на n максимально равных по размеру частей.
+    """
+    k, m = divmod(len(lst), n)
+    return [lst[i*k + min(i, m):(i+1)*k + min(i+1, m)] for i in range(n)]
+
+
 def generate_greedy_full_coverage_schedule(participants: List[int], n: int, m: int, attempts: int = 100, max_rounds_override: Optional[int] = None) -> List[Dict[int, int]]:
     """
     Генерирует полное расписание сессии (для обратной совместимости)
@@ -262,7 +280,7 @@ def generate_greedy_full_coverage_schedule(participants: List[int], n: int, m: i
 if __name__ == "__main__":
     # Создаем планировщик сессии
     participants = [1, 2, 3, 4, 5, 6, 7, 8]
-    scheduler = SessionScheduler(participants, n=2, m=4)
+    scheduler = SessionScheduler(participants, n=3, m=4)
     
     print("Начальная сессия:")
     print(f"Участники: {scheduler.participants}")
@@ -312,7 +330,7 @@ if __name__ == "__main__":
 
     # Создаем планировщик сессии
     participants = [1, 2, 3, 4, 5, 6, 7, 8]
-    scheduler = SessionScheduler(participants, n=2, m=4)
+    scheduler = SessionScheduler(participants, n=3, m=4)
     
     print("Начальная сессия:")
     print(f"Участники: {scheduler.participants}")
@@ -354,7 +372,7 @@ if __name__ == "__main__":
 
     # Создаем планировщик сессии
     participants = [1, 2, 3, 4, 5, 6, 7, 8]
-    scheduler = SessionScheduler(participants, n=2, m=4)
+    scheduler = SessionScheduler(participants, n=3, m=4)
     
     print("Начальная сессия:")
     print(f"Участники: {scheduler.participants}")
