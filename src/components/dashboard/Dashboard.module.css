@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+}
+
+.metrics {
+    display: flex;
+    flex-direction: column;
+}
+
+.tables {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 37.5vw; 
+}
+
+.names{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 37.5vw; 
+    color: white;
+    text-align: left;
+    /* font-size: 11px; */
+    align-self: center;
+}
+
+.dashboard_text {
+    display: flex;
+    flex-direction: column;
+    margin: 1vh;
+}
+
+.dashboard {
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+    top: 10vh;
+    margin-left: 4vw; 
+    width: 75vw; 
+    height: 85vh;          /* Устанавливаем высоту элемента */
+    background-color: #25272F; /* Устанавливаем цвет фона */
+    border-radius: 10px; 
+}
+
+.column {
+    flex: 1;
+    text-align: center;
+    padding: '0 10px';
+  }
