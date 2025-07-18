@@ -9,7 +9,7 @@ export default function Dashboard(props){
     const NumTables=props.num
     const [metrics, setMetrics] = useState([])
     const fetchMetrics = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/f074-2f85-4ab6-ad95')
+        const response = await fetch('https://dummyjson.com/c/e480-4f05-46f9-8248')
         const metrics = await response.json()
         setMetrics(metrics)
     }, [])
@@ -49,17 +49,6 @@ export default function Dashboard(props){
         fetchPeople()
     }, [fetchPeople])
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentBlockIndex((prevIndex) => {
-                const newIndex = prevIndex + maxBlocksPerPage;
-                return newIndex >= NumTables ? 0 : newIndex; // Если превышен NumTables, начинаем заново
-            });
-        }, 7000);
-        
-        return () => clearInterval(interval);
-    }, [NumTables]);
-
     return (
         <section className={classes.container}>
             <div className={classes.dashboard}>
@@ -77,29 +66,32 @@ export default function Dashboard(props){
                     </div>
                     <div className={classes.names}>
                         <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
+                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>Мнемоника</a>
                         {people
                                 .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
                                 .map((person, index) => (
                                     <li style={{ listStyle: 'none' }} key={index}>
-                                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>{person.initials}</a>
+                                        <a style={{fontWeight: 'bold', fontSize: '10px'}}>{person.initials}</a>
                                     </li>
                                 ))}
                         </div>
                         <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
+                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>Участник</a>
                         {people
                                 .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
                                 .map((person, index) => (
                                     <li style={{ listStyle: 'none' }} key={index}>
-                                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>{person.name}</a>
+                                        <a style={{fontWeight: 'bold', fontSize: '10px'}}>{person.name}</a>
                                     </li>
                                 ))}
                         </div>
                         <div className={classes.column}>
+                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>Номер стола</a>
                         {people
                                 .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
                                 .map((person, index) => (
-                                    <li style={{ listStyle: 'none' }} key={index}>
-                                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>{person.table_index}</a>
+                                    <li style={{listStyle: 'none'}} key={index}>
+                                        <a style={{fontWeight: 'bold', fontSize: '10px'}}>{person.table_index}</a>
                                     </li>
                                 ))}
                         </div>
@@ -110,11 +102,11 @@ export default function Dashboard(props){
             {/* в этот блок с метриками с бэка передаём процент уникальных встреч, номер раунда, число участников и число столов */}
             <div className={classes.metrics}>
                 <Metric  key={1} 
-                unique_meetings={metrics.map((metric) => (metric.persent_unique_meetings))}
+                strangers_num={metrics.map((metric) => (metric.strangers_num))}
                 current_round={metrics.map((metric) => (metric.current_round))}
                 round={metrics.map((metric) => (metric.round_num))}
                 people={metrics.map((metric) => (metric.people_num))}
-                tables={metrics.map((metric) => (metric.tables))}
+                tables={metrics.map((metric) => (metric.tables_num))}
                 round_time={metrics.map((metric) => (metric.round_time))}
                 break_time={metrics.map((metric) => (metric.break_time))}
                 />           

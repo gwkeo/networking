@@ -21,7 +21,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 37.5vw; 
+    width: 37vw; 
     color: white;
     text-align: left;
     /* font-size: 11px; */
@@ -39,15 +39,18 @@
     display: flex;
     flex-direction: column;
     top: 10vh;
-    margin-left: 4vw; 
+    margin-left: 3vw; 
     width: 75vw; 
-    height: 85vh;          /* Устанавливаем высоту элемента */
+    height: 87vh;          /* Устанавливаем высоту элемента */
     background-color: #25272F; /* Устанавливаем цвет фона */
     border-radius: 10px; 
 }
 
 .column {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
     text-align: center;
-    padding: '0 10px';
+    padding-left: 2.5vw; 
+    padding-right: 2.5vw;
+    overflow: hidden
   }
