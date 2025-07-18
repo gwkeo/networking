@@ -1,5 +1,6 @@
 from telebot.util import quick_markup
 from enum import Enum, auto
+from telebot import types
 
 
 class CallbackTypes(Enum):
@@ -39,3 +40,21 @@ user_ready = quick_markup({
         'callback_data': f"{CallbackTypes.leave_session.value}"
     }
 }, row_width=2)
+
+
+admin_main = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+admin_main.add(
+    types.KeyboardButton('Показать настройки ⚙️'),
+    types.KeyboardButton('Изменить настройки ✏️'),
+    types.KeyboardButton('Начать сессию 🚦'),
+    types.KeyboardButton('Следующий раунд ⏭️'),
+    types.KeyboardButton('Показать участников 👥'),
+    types.KeyboardButton('Идеальные параметры 💡')
+)
+
+start_session = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
+start_session.add(types.KeyboardButton('Старт'))
+
+start_session_inline = quick_markup({
+    'Старт': {'callback_data': 'ADMIN_ROUND_START'}
+}, row_width=1)
