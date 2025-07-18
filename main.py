@@ -27,6 +27,7 @@ class AppContext:
         self.settings = models.Settings(5, 4)
         self.state = State.default
         self.scheduler = session.SessionScheduler(self.users, 1, 1)
+        self.bots_count = 0
 
 
 bot = telebot.TeleBot(token=config['api_token'])
@@ -97,7 +98,7 @@ def handle_next_round(message: types.Message):
         bot.send_message(chat_id=ctx.admin_chat_id, text=texts.unable_to_start_session)
         return
     for participant, table in round_dict.items():
-        if int(participant) == 442047289:
+        if int(participant) > 100:
             bot.send_message(
                 chat_id=int(participant),
                 text=texts.show_users_current_table_num(table_num=table),
@@ -116,12 +117,10 @@ def handle_add_participant(message: types.Message):
     ctx = bot.context
     if message.chat.id != ctx.admin_chat_id:
         return
-    if ctx.users:
-        ctx.users.append(str(int(ctx.users[-1]) + 1))
-    else:
-        ctx.users.append('1')
-    print(ctx.users)
-    ctx.scheduler.add_participant(int(ctx.users[-1]))
+    
+    ctx.users.append(str(ctx.bots_count))
+    ctx.bots_count += 1
+
     bot.send_message(
         chat_id=message.chat.id,
         text=f"Участник {ctx.users[-1]} добавлен"
@@ -132,9 +131,11 @@ def handle_remove_participant(message: types.Message):
     ctx = bot.context
     if message.chat.id != ctx.admin_chat_id:
         return
+    
+    
     if ctx.users:
         removed_user = ctx.users.pop()
-        ctx.scheduler.remove_participant(int(removed_user))
+        ctx.scheduler.remove_participant(removed_user)
         bot.send_message(
             chat_id=message.chat.id,
             text=f"Участник {removed_user} удален"
@@ -192,6 +193,8 @@ def handle_callback_query(callback: types.CallbackQuery):
                 )
         case markups.CallbackTypes.leave_session.value:
             ctx.users.remove(str(callback.message.chat.id))
+            ctx.scheduler.remove_participant(str(callback.message.chat.id))
+
             bot.edit_message_text(
                 chat_id=callback.message.chat.id,
                 message_id=callback.message.id,
