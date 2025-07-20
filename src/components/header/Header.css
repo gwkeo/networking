@@ -1,0 +1,22 @@
+header {
+    position: fixed;
+    width: 100vw; 
+    height: 6vh;          /* Устанавливаем высоту элемента */
+    background-color: #25272F; /* Устанавливаем цвет фона */
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    width: auto; /* Настройте размер по вашему усмотрению */
+    height: 4vh;
+    margin-left: 20px;
+    margin-right: 20px; /* Отступ между изображением и текстом */
+    align-items: center;
+}
+
+.header-title {
+    font-size: 16px; /* Размер шрифта для заголовка */
+    margin: 0; /* Убираем отступы */
+    color: white;
+}

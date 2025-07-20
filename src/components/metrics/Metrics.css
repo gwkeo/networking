@@ -1,0 +1,24 @@
+.metric {
+    position: relative;
+    width: 18vw;
+    height: 19.4vh;          /* Устанавливаем высоту элемента */
+    background-color: #25272F; /* Устанавливаем цвет фона */
+    border-radius: 10px;
+    top: 10vh;
+    margin-left: 2vw;
+    margin-bottom: 3vh;
+    display: flex;          /* Используем Flexbox для выравнивания */
+    flex-direction: column; /* Элементы будут располагаться вертикально */
+    justify-content: space-between; /* Центрируем содержимое по вертикали */
+    text-align: left;
+}
+
+.metric-content {
+    display: flex;         
+    /* flex-direction: column; 
+    width: 100%;          
+    height: 80%;
+    padding-top: 0px;
+    text-align: left;
+    justify-content: space-between;  */
+}
