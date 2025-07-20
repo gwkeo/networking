@@ -5,64 +5,147 @@ import Table from "../tables/Table";
 
 export default function Dashboard(props){
     const maxBlocksPerPage = 4;//на экране максимально можно отобразить 4 стола
-    //const [numTables, setNumTables] =useState(props.num);
-    const NumTables=props.num
-    const [metrics, setMetrics] = useState([])
-    const fetchMetrics = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/e480-4f05-46f9-8248')
-        const metrics = await response.json()
-        setMetrics(metrics)
-    }, [])
-    useEffect(() => {
-        fetchMetrics()
-    }, [fetchMetrics])
-    //алгоритм для отображения по 4 стола на странице    
-    const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
-    
-    const calculateBlocksToDisplay = (currentIndex) => { //сколько блоков отображать на текущей странице
-        return Math.min(maxBlocksPerPage, NumTables - currentIndex); // Возвращаем количество блоков для отображения
-    };
+    const [metrics, setMetrics] = useState({})
+    const [people, setPeople] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState(null)
 
+    // Объединенная функция для загрузки всех данных
+    const fetchData = useCallback(async () => {
+        try {
+            setError(null)
+            
+            // Параллельно загружаем метрики и пользователей
+            const [metricsResponse, usersResponse] = await Promise.all([
+                fetch('http://localhost:5000/api/metrics'),
+                fetch('http://localhost:5000/api/users')
+            ])
+
+            if (!metricsResponse.ok || !usersResponse.ok) {
+                throw new Error('Ошибка загрузки данных')
+            }
+
+            const [metricsData, peopleData] = await Promise.all([
+                metricsResponse.json(),
+                usersResponse.json()
+            ])
+
+            setMetrics(metricsData)
+            setPeople(peopleData)
+            setIsLoading(false)
+        } catch (err) {
+            console.error('Ошибка при загрузке данных:', err)
+            setError(err.message)
+            setIsLoading(false)
+        }
+    }, [])
+
+    // Начальная загрузка
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
+
+    // Long polling - каждые 5 секунд обновляем данные
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchData()
+        }, 5000)
+
+        return () => clearInterval(interval)
+    }, [fetchData])
+
+    // вычисляем максимальный номер стола среди пользователей
+    const maxTableIndex = people.length > 0 ? Math.max(...people.map(p => p.table_index)) : 0;
+    
+    // пагинация столов
+    const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+    const calculateBlocksToDisplay = (currentIndex) => {
+        return Math.min(maxBlocksPerPage, maxTableIndex - currentIndex);
+    };
+    
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentBlockIndex((prevIndex) => {
                 const newIndex = prevIndex + maxBlocksPerPage;
-                return newIndex >= NumTables ? 0 : newIndex; // Если превышен NumTables, начинаем заново
+                return newIndex >= maxTableIndex ? 0 : newIndex;
             });
         }, 7000);
-        
         return () => clearInterval(interval);
-    }, [NumTables]);
-
+    }, [maxTableIndex]);
+    
     const blocksToDisplay = calculateBlocksToDisplay(currentBlockIndex);
 
-    //подгрузка данных о пользователях в текущем раунде
-    const [people, setPeople] = useState([])
+    // Показываем индикатор загрузки при первой загрузке
+    if (isLoading) {
+        return (
+            <section className={classes.container}>
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center', 
+                    height: '100vh',
+                    color: 'white',
+                    fontSize: '18px'
+                }}>
+                    Загрузка данных...
+                </div>
+            </section>
+        )
+    }
 
-    const fetchPeople = useCallback(async () => {
-        const response = await fetch('https://dummyjson.com/c/7101-d292-4b30-8058')
-        const people = await response.json()
-        setPeople(people)
-    }, [])
-
-    useEffect(() => {
-        fetchPeople()
-    }, [fetchPeople])
+    // Показываем ошибку, если что-то пошло не так
+    if (error) {
+        return (
+            <section className={classes.container}>
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center', 
+                    height: '100vh',
+                    color: 'red',
+                    fontSize: '16px',
+                    textAlign: 'center'
+                }}>
+                    Ошибка загрузки: {error}<br/>
+                    <button 
+                        onClick={fetchData}
+                        style={{
+                            marginTop: '20px',
+                            padding: '10px 20px',
+                            backgroundColor: '#A368FC',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Попробовать снова
+                    </button>
+                </div>
+            </section>
+        )
+    }
 
     return (
         <section className={classes.container}>
             <div className={classes.dashboard}>
                 <div className={classes.dashboard_text}>
                     <a style={{color:'white', fontSize: '20px', fontWeight: 'bold'}}>Рассадка за столами</a>
+                    <div style={{color:'#888', fontSize: '12px', marginTop: '5px'}}>
+                        Автообновление каждые 5 секунд
+                    </div>
                 </div>
-                {/* table_index -номер стола, рассчитывается здесь,
-                    num_tables- число столов, передается с бэка,
-                    также с бэка надо передавать список участников и число мест за столами */}
                 <div style={{display: 'flex', flexDirection: 'row'}}>
                     <div className={classes.tables}>
-                        { [...Array(blocksToDisplay)].map((item, index) => <Table key={index} 
-                        table_index={(currentBlockIndex+1)+index} num_tables={NumTables} 
-                        num_seats={metrics.map((metric) => (metric.seats[currentBlockIndex+index]))}/> ) } 
+                        {Array.from({length: blocksToDisplay}).map((_, index) => {
+                            const tableIndex = currentBlockIndex + 1 + index;
+                            return (
+                                <Table key={tableIndex}
+                                    table_index={tableIndex}
+                                    people={people}
+                                />
+                            );
+                        })}
                     </div>
                     <div className={classes.names}>
                         <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
@@ -98,17 +181,14 @@ export default function Dashboard(props){
                     </div>
                 </div>
             </div>
-
-            {/* в этот блок с метриками с бэка передаём процент уникальных встреч, номер раунда, число участников и число столов */}
             <div className={classes.metrics}>
                 <Metric  key={1} 
-                strangers_num={metrics.map((metric) => (metric.strangers_num))}
-                current_round={metrics.map((metric) => (metric.current_round))}
-                round={metrics.map((metric) => (metric.round_num))}
-                people={metrics.map((metric) => (metric.people_num))}
-                tables={metrics.map((metric) => (metric.tables_num))}
-                round_time={metrics.map((metric) => (metric.round_time))}
-                break_time={metrics.map((metric) => (metric.break_time))}
+                strangers_num={metrics.strangers_num}
+                current_round={metrics.current_round}
+                total_rounds={metrics.total_rounds}
+                people_count={people.length}
+                round_time_minutes={metrics.round_time_minutes}
+                break_time_minutes={metrics.break_time_minutes}
                 />           
             </div>
         </section>
