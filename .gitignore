@@ -28,3 +28,5 @@ yarn-error.log*
 __pycache__
 
 config.json
+server_config.json
+cat-hyppy.mp4

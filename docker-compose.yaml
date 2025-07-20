@@ -1,6 +1,6 @@
-version: "3.8"
-
 services:
+  
+  # React фронтенд
   frontend:
     image: node:18
     working_dir: /app
@@ -8,7 +8,34 @@ services:
       - ./:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
+      - "80:80"
     command: sh -c "npm install && npm start"
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - PORT=80
+      - REACT_APP_API_URL=http://localhost:5000/api
+  
+  # Flask API сервер
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/app
+    environment:
+      - FLASK_ENV=development
+    command: python server.py
+    depends_on:
+      - frontend
+
+
+  # Telegram бот (опционально, можно запускать отдельно)
+  bot:
+    build: .
+    volumes:
+      - ./:/app
+    environment:
+      - API_BASE_URL=http://api:5000/api
+    command: python main.py
+    depends_on:
+      - api
