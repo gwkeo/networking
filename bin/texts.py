@@ -12,8 +12,8 @@ user_is_happy = "Вы зарегистрированы на мероприяти
 unavailable_session = "Сессия недоступна"
 unable_to_start_session = "Не удалось начать сессию"
 
-def show_users_current_table_num(table_num: int):
-    return f"Подходите к столу №{table_num}"
+def show_users_current_table_num(table_num: int, round_num: int = 1):
+    return f"Раунд {round_num}. Мега плюс вайб сигма бой, иди за стол {table_num} для новых пикми знакомств)"
 
 
 def welcome_admin(name: str):

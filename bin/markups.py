@@ -49,7 +49,8 @@ admin_main.add(
     types.KeyboardButton('Начать сессию 🚦'),
     types.KeyboardButton('Следующий раунд ⏭️'),
     types.KeyboardButton('Показать участников 👥'),
-    types.KeyboardButton('Идеальные параметры 💡')
+    types.KeyboardButton('Идеальные параметры 💡'),
+    types.KeyboardButton('Закончить сессию 🛑')
 )
 
 start_session = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
