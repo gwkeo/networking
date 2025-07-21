@@ -9,7 +9,28 @@ class CallbackTypes(Enum):
     accept_new_user = "ACCEPTNEWUSER"
     deny_new_user = "DENYNEWUSER"
     user_ready = "USERREADY"
+    admin_show_settings = "ADMIN_SHOWSETTINGS"
+    admin_change_settings = "ADMIN_CHANGESETTINGS"
+    admin_start_session = "ADMIN_STARTSESSION"
+    admin_next_round = "ADMIN_NEXTRND"
+    admin_add_participant = "ADMIN_ADDPARTICIPANT"
+    admin_remove_participant = "ADMIN_REMOVEPARTICIPANT"
+    admin_show_participants = "ADMIN_SHOWPARTICIPANTS"
+    admin_round_start = "ADMIN_ROUND_START"
+    admin_finish_session = "ADMIN_FINISHSESSION"
 
+class AdminButtons(Enum):
+    show_settings = "Показать настройки ⚙️"
+    change_settings = "Изменить настройки ✏️"
+    start_session = "Начать сессию 🚦"
+    next_round = "Следующий раунд ⏭️"
+    show_users = "Показать участников 👥"
+    ideal_parameters = "Идеальные параметры 💡"
+    finish_session = "Закончить сессию 🛑"
+
+    @classmethod
+    def to_array(cls):
+        return [member.value for member in cls]
 
 register_markup = quick_markup({
     'Зарегистрироваться': {'callback_data': CallbackTypes.register.value}
@@ -57,5 +78,10 @@ start_session = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
 start_session.add(types.KeyboardButton('Старт'))
 
 start_session_inline = quick_markup({
-    'Старт': {'callback_data': 'ADMIN_ROUND_START'}
+    'Старт': {'callback_data': CallbackTypes.admin_round_start.value}
 }, row_width=1)
+
+
+if __name__ == "__main__":
+    a = AdminButtons.to_array()
+    print(a)

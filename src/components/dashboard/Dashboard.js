@@ -17,8 +17,8 @@ export default function Dashboard(props){
             
             // Параллельно загружаем метрики и пользователей
             const [metricsResponse, usersResponse] = await Promise.all([
-                fetch('http://localhost:5000/api/metrics'),
-                fetch('http://localhost:5000/api/users')
+                fetch(`${process.env.REACT_APP_API_URL}/metrics`),
+                fetch(`${process.env.REACT_APP_API_URL}/users`)
             ])
 
             if (!metricsResponse.ok || !usersResponse.ok) {
@@ -130,24 +130,13 @@ export default function Dashboard(props){
         <section className={classes.container}>
             <div className={classes.dashboard}>
                 <div className={classes.dashboard_text}>
-                    <a style={{color:'white', fontSize: '20px', fontWeight: 'bold'}}>Рассадка за столами</a>
-                    <div style={{color:'#888', fontSize: '12px', marginTop: '5px'}}>
-                        Автообновление каждые 5 секунд
-                    </div>
+                <a style={{color:'white', fontSize: '20px', fontWeight: 'bold'}}>Рассадка за столами</a>
+                <div style={{color:'#888', fontSize: '12px', marginTop: '5px'}}>Автообновление каждые 5 секунд</div>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                    <div className={classes.tables}>
-                        {Array.from({length: blocksToDisplay}).map((_, index) => {
-                            const tableIndex = currentBlockIndex + 1 + index;
-                            return (
-                                <Table key={tableIndex}
-                                    table_index={tableIndex}
-                                    people={people}
-                                />
-                            );
-                        })}
-                    </div>
-                    <div className={classes.names}>
+                <div className={classes.names}>
+                
+
                         <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
                         <a style={{fontWeight: 'bold', fontSize: '12px'}}>Мнемоника</a>
                         {people
@@ -179,6 +168,18 @@ export default function Dashboard(props){
                                 ))}
                         </div>
                     </div>
+                    <div className={classes.tables}>
+                        {Array.from({length: blocksToDisplay}).map((_, index) => {
+                            const tableIndex = currentBlockIndex + 1 + index;
+                            return (
+                                <Table key={tableIndex}
+                                    table_index={tableIndex}
+                                    people={people}
+                                />
+                            );
+                        })}
+                    </div>
+
                 </div>
             </div>
             <div className={classes.metrics}>

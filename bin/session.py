@@ -419,3 +419,17 @@ if __name__ == "__main__":
         print(f"Раунд {i+1}: {round_dict}")
     
     test_scheduler.print_repeated_meetings_report()
+
+def get_ideal_tables_and_seats(n):
+        best_tables = 1
+        best_seats = n
+        min_diff = n
+        for tables in range(1, n+1):
+            if n % tables == 0:
+                seats = n // tables
+                diff = abs(seats - tables)
+                if diff < min_diff:
+                    min_diff = diff
+                    best_tables = tables
+                    best_seats = seats
+        return best_tables, best_seats

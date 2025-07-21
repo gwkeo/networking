@@ -7,7 +7,7 @@ import './App.css';
 export default function App() {
     const [metrics, setMetrics] = useState([])
     const fetchMetrics = useCallback(async () => {
-        const response = await fetch('http://localhost:5000/api/metrics')
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/metrics`)
         const metrics = await response.json()
         setMetrics(metrics)
     }, [])

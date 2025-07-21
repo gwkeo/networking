@@ -11,7 +11,7 @@ try:
     with open('config.json', 'r') as config_file:
         config = json.loads(config_file.read())
 except FileNotFoundError:
-    config = {"host": "0.0.0.0", "port": 5000}
+    config = {"host": "0.0.0.0", "port": 5050}
 
 app = Flask(__name__)
 CORS(app)  # Разрешаем CORS для React приложения
@@ -19,7 +19,7 @@ CORS(app)  # Разрешаем CORS для React приложения
 class AppState:
     def __init__(self):
         self.users = []  # Список пользователей с их размещением по столам
-        self.metrics = []  # Метрики сессии
+        self.metrics = dict()  # Метрики сессии
         self.settings = models.Settings(10, 5, 4, 2)  # По умолчанию: 10 столов, 5 мест, 4 раунда, 2 мин перерыв
         self.current_round = 0
         self.ready_users = set()
@@ -58,8 +58,8 @@ def update_metrics():
     """Обновление метрик от бота"""
     try:
         data = request.get_json()
-        if not data or not isinstance(data, list):
-            return jsonify({"error": "Неверный формат данных. Ожидается список метрик"}), 400
+        if not data or not isinstance(data, dict):
+            return jsonify({"error": "Неверный формат данных. Ожидается объект"}), 400
         
         app_state.metrics = data
         print(f"Обновлены метрики: {len(data)} записей")

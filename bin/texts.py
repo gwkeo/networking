@@ -7,33 +7,52 @@ user_left_session = "Вы покинули нетворкинг сессию"
 registration_denied = "Ваш запрос был отклонен"
 change_tables_count = "Введите число столов"
 change_seats_count = "Введите число мест за столом"
+change_round_time = "Введите время раунда в минутах:"
 invalid_num_value = "Введенное значение не является числовым. Введите число"
 user_is_happy = "Вы зарегистрированы на мероприятие"
 unavailable_session = "Сессия недоступна"
 unable_to_start_session = "Не удалось начать сессию"
+round_started = "Раунд начался!"
+no_users_to_remove = "Нет участников для удаления"
+enter_name_surname = "Пожалуйста, введите ваше имя и фамилию (через пробел):"
+session_finished = "Сессия завершена. Все данные сброшены."
+session_finished_thanks = "Нетворкинг сессия завершена, спасибо за участие!"
+all_users_ready_start = "Все участники готовы! Можно начинать раунд."
+all_users_ready_next = "Все участники готовы! Можно начинать следующий раунд."
+wait_for_next_round = "Вы добавлены, ожидайте следующего раунда."
+
+def show_ideal_tables_and_seats(tables: int, seats: int, rounds: int):
+    return f"Идеально: {tables} стол(а/ов) по {seats} мест\nМинимальное число раундов для покрытия всех пар: {rounds}"
+
+def show_ready_users(count: int, all_users: int):
+    return f"Готовы: {count} из {all_users}"
 
 def show_users_current_table_num(table_num: int, round_num: int = 1):
     return f"Раунд {round_num}. Мега плюс вайб сигма бой, иди за стол {table_num} для новых пикми знакомств)"
 
-
 def welcome_admin(name: str):
-    return f"Добро пожаловать в админ-панель.\nПросмотреть текущие настройки - /showsettings\nИзменить настройки мероприятия - /changesettings\nНачать первый раунд сессии - /startsession"
-
+    return f"Добро пожаловать в админ-панель"
 
 def admin_chat_new_request(name: str):
     return f"Пользователь {name} пытается присоединиться к нетворкинг сессии"
 
-
 def current_settings(settings: models.Settings):
-    return f"Количество столов: {settings.tables_count}\nЧисло мест за столом: {settings.seats_count}"
-
+    return f"Количество столов: {settings.tables_count}\nЧисло мест за столом: {settings.seats_count}\nВремя раунда: {settings.round_time} минут"
 
 def user_accepted_log(message: str):
     return f"{message}. Принят"
-
 
 def user_declined_log(message: str):
     return f"{message}. Отклонен"
 
 def user_left_session_log(name: str):
     return f"{name} покинул сессию"
+
+def user_removed(user_id: str):
+    return f"Участник {user_id} удален"
+
+def user_added(user_id: str):
+    return f"Участник {user_id} добавлен"
+
+def user_registered_during_session(user_id: str):
+    return f"Пользователь {user_id} зарегистрирован во время сессии и будет включён в следующий раунд."

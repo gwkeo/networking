@@ -13,10 +13,12 @@ class UserInfo:
     '''
     :param username: Имя пользователя
     :param table: Стол, за которым пользователь сидит
+    :param message_id: ID последнего сообщения с номером стола
     '''
-    def __init__(self, username: str, table: int):
+    def __init__(self, username: str, table: int, message_id: int = None):
         self.username = username
         self.table = table
+        self.message_id = message_id
 
         if len(username.split(' ')) > 1:
             self.initials = username.split(' ')[-1][0] + username.split(' ')[0][0]

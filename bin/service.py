@@ -5,7 +5,7 @@ from bin.models import UserInfo
 import math
 
 class AppService:
-    def __init__(self, base_url = "http://api:5000/api"):
+    def __init__(self, base_url = "http://api:5050/api"):
         self.base_url = base_url
     
 
@@ -68,7 +68,10 @@ class AppService:
         }
         
         try:
-            response = requests.post("http://localhost:5000/api/metrics", json=empty_metrics)
+            response = requests.post(
+                url = self.base_url + "/metrics", 
+                json=empty_metrics
+            )
             response.raise_for_status()
         except Exception as e:
             print(f"[DEBUG] Не удалось очистить метрики: {e}")
@@ -93,6 +96,11 @@ class AppService:
             "strangers_num": stats['met_pairs'] if stats['met_pairs'] > 0 else 0
         }
         try:
-            requests.post("http://localhost:5000/api/metrics", json=metrics_json)
+            requests.post(
+                url = self.base_url + "/metrics", 
+                json=metrics_json
+            )
+
         except Exception as e:
             print(f"[DEBUG] Не удалось отправить метрики: {e}")
+

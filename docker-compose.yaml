@@ -13,21 +13,22 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - PORT=80
-      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_API_URL=http://localhost:5050/api
   
   # Flask API сервер
   api:
     build: .
     ports:
-      - "5000:5000"
+      - "5050:5050"
     volumes:
       - ./:/app
     environment:
       - FLASK_ENV=development
+      - API_HOST=0.0.0.0
+      - API_PORT=5050
     command: python server.py
     depends_on:
       - frontend
-
 
   # Telegram бот (опционально, можно запускать отдельно)
   bot:
@@ -35,7 +36,9 @@ services:
     volumes:
       - ./:/app
     environment:
-      - API_BASE_URL=http://api:5000/api
+      - API_HOST=api
+      - API_PORT=5050
+      - BOT_API_URL=http://api:5050/api
     command: python main.py
     depends_on:
       - api
