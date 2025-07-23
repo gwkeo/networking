@@ -9,15 +9,7 @@ class CallbackTypes(Enum):
     accept_new_user = "ACCEPTNEWUSER"
     deny_new_user = "DENYNEWUSER"
     user_ready = "USERREADY"
-    admin_show_settings = "ADMIN_SHOWSETTINGS"
-    admin_change_settings = "ADMIN_CHANGESETTINGS"
-    admin_start_session = "ADMIN_STARTSESSION"
-    admin_next_round = "ADMIN_NEXTRND"
-    admin_add_participant = "ADMIN_ADDPARTICIPANT"
-    admin_remove_participant = "ADMIN_REMOVEPARTICIPANT"
-    admin_show_participants = "ADMIN_SHOWPARTICIPANTS"
     admin_round_start = "ADMIN_ROUND_START"
-    admin_finish_session = "ADMIN_FINISHSESSION"
 
 class AdminButtons(Enum):
     show_settings = "Показать настройки ⚙️"
