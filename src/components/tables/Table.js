@@ -3,22 +3,21 @@ import './Table.css';
 
 export default function Table(props) {
     const { people, table_index } = props;
-    // Фильтруем пользователей, которые сидят за этим столом
     const tablePeople = people.filter(person => person.table_index === table_index);
     const num_seats = tablePeople.length;
-    const radius = 60; // подумать об относительности размера
-    const smallCircleRadius = 20; // радиус маленьких кружков
-
+    const radius = 60; // Возвращаем исходный размер основного круга
+    const smallCircleRadius = 25; // Оставляем увеличенный размер кругов с инициалами
+    
     return (
         <table_container>
            <div className='table_container'>
             <div className="circles">
                 <div className="big-circle" style={{ width: radius * 2, height: radius * 2 }}>
-                    <span className="circle-number">{table_index}</span>
+                    <span className="circle-number" style={{fontSize: '3.5vh'}}>{table_index}</span>
                     {tablePeople.map((person, i) => {
-                        const angle = (i / num_seats) * 2 * Math.PI - Math.PI / 2; // угол в радианах
-                        const x = radius + radius * Math.cos(angle) - smallCircleRadius; // координата X
-                        const y = radius + radius * Math.sin(angle) - smallCircleRadius; // координата Y
+                        const angle = (i / num_seats) * 2 * Math.PI - Math.PI / 2;
+                        const x = radius + radius * Math.cos(angle) - smallCircleRadius;
+                        const y = radius + radius * Math.sin(angle) - smallCircleRadius;
                         return (
                             <div
                                 key={i}
@@ -33,7 +32,11 @@ export default function Table(props) {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <span className="circle-number" style={{fontSize: '10px'}}>{person.initials}</span>
+                                <span className="circle-number" style={{
+                                    fontSize: '2vh',
+                                    position: 'static',
+                                    transform: 'none'
+                                }}>{person.initials}</span>
                             </div>
                         );
                     })}

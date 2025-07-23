@@ -69,57 +69,80 @@
 .peopleColumns {
     display: flex;
     flex-direction: row;
-    gap: 2vw;
+    gap: 0; /* Убираем gap, так как будем использовать бордеры */
     height: 100%;
     overflow-y: auto;
+    border-top: 1px solid #444; /* Добавляем верхнюю границу */
+    border-left: 1px solid #444; /* Добавляем левую границу */
 }
 
 .column {
     display: flex;
     flex-direction: column;
     text-align: center;
-    padding-left: 2.5vw;
-    padding-right: 2.5vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
     color: white;
     height: 100%;
+    border-right: 1px solid #444; /* Добавляем правую границу для всех колонок */
 }
 
+/* Колонка с именем участника */
 .columnWithBorder {
     composes: column;
-    border-right: 1px solid #444;
+    flex: 3; /* Даем больше места для имени */
+}
+
+/* Отдельные стили для узких колонок */
+.columnSmall {
+    composes: column;
+    flex: 1; /* Узкая колонка */
+    max-width: 4vw; /* Ограничиваем максимальную ширину */
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
 }
 
 .columnHeader {
     font-weight: bold;
-    font-size: 12px;
-    padding-bottom: 1vh;
+    font-size: 14px;
+    padding: 1vh; /* Добавляем padding со всех сторон */
     position: sticky;
     top: 0;
     background: #25272F;
     z-index: 1;
+    border-bottom: 1px solid #444; /* Добавляем нижнюю границу */
 }
 
 .columnItem {
     list-style: none;
     color: white;
-    margin: 0.5vh 0;
+    margin: 0;  /* Убираем margin */
+    padding: 1vh 0.5vh; /* Добавляем padding вместо margin */
+    border-bottom: 1px solid #444; /* Добавляем нижнюю границу */
 }
 
 .columnText {
     font-weight: bold;
-    font-size: 10px;
+    font-size: 14px;
+}
+
+/* Добавляем стили для последней строки, чтобы убрать двойную границу */
+.columnItem:last-child {
+    border-bottom: none;
 }
 
 .tablesBlock {
     background: #25272F;
     border-radius: 10px;
-    padding: 2vh 2vw;
+    padding: 2vh 1.5vw; /* Немного уменьшаем горизонтальный padding */
     width: 35vw;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: space-around; /* Меняем на space-around для более гибкого распределения */
+    gap: 1vh 0.25vw; /* Уменьшаем горизонтальный gap */
     height: 100%;
     overflow-y: auto;
+    align-content: flex-start;
 }

@@ -158,8 +158,8 @@ export default function Dashboard(props){
                                         </li>
                                     ))}
                             </div>
-                            <div className={classes.column}>
-                                <a className={classes.columnHeader}>Номер стола</a>
+                            <div className={classes.columnSmall}>
+                                <a className={classes.columnHeader}>№</a>
                                 {people
                                     .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
                                     .map((person, index) => (

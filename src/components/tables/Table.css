@@ -2,42 +2,55 @@
     position: relative;
     display: flex;
     flex-direction: row;
-    height: 39vh;
-    width: 18.75vw; 
+    height: 32vh;
+    width: 15.5vw;
+    margin: 0.5vh 0.5vw;
 }
 
 .circles {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
 }
 
 .big-circle {
-  background-color: #A368FC;
-  border-radius: 50%;
-  position: relative;
-  margin: 4vh; 
-  margin-left: 2.5vw;
-  align-self: center;
+    background-color: #A368FC;
+    border-radius: 50%;
+    position: relative;
+    width: 56.25%;
+    aspect-ratio: 1;
+    margin: 2vh;
+    margin-left: 1.5vw;
+    align-self: center;
 }
 
 .small-circle {
-  background-color: #A4C8FF;
-  border-radius: 50%;
-  position: absolute;
+    background-color: #A4C8FF;
+    border-radius: 50%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .circle-number {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 47%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
 }
 
-.text {
-  display: flex;
-  flex-direction: column;
-  text-align: start;
+/* Отдельные стили для номера стола и инициалов */
+.big-circle > .circle-number {
+    font-size: 3.125vh;
+}
+
+.small-circle > .circle-number {
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    font-size: 1.8vh;
 }
