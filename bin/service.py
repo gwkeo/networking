@@ -1,6 +1,6 @@
 import requests
 import json
-from typing import Dict, Tuple
+from typing import List
 from bin.models import UserInfo
 import math
 
@@ -9,8 +9,8 @@ class AppService:
         self.base_url = base_url
     
 
-    def update_users(self, users: Dict[int, UserInfo]):
-        request_body = json.dumps([val.to_dict() for key, val in users.items()])
+    def update_users(self, users: List[UserInfo]):
+        request_body = json.dumps([user.to_dict() for user in users])
 
         headers = {
             'Content-Type': 'application/json',
@@ -81,16 +81,44 @@ class AppService:
         self.clear_users()
         self.clear_metrics()
 
-    def send_metrics(self, stats, round_time, break_time):
-        total_rounds = math.ceil((stats['total_participants']-1) / (stats['seats_per_table']-1)) if stats['total_participants'] > 1 and stats['seats_per_table'] > 1 else 1
+    def calculate_total_rounds(self, total_participants: int, seats_per_table: int) -> int:
+        """
+        Вычисляет необходимое количество раундов для того, чтобы каждый участник встретился со всеми.
+        
+        Args:
+            total_participants (int): Общее количество участников
+            seats_per_table (int): Количество мест за одним столом
+            
+        Returns:
+            int: Необходимое количество раундов
+        """
+        if total_participants <= 1 or seats_per_table <= 1:
+            return 1
+            
+        # За один раунд участник встречается с (seats_per_table-1) новыми людьми
+        # Всего нужно встретиться с (total_participants-1) людьми
+        return math.ceil((total_participants - 1) / (seats_per_table - 1))
 
+    def send_metrics(self, stats, round_time, break_time):
+        # Вычисляем необходимое количество раундов
+        total_rounds = self.calculate_total_rounds(
+            total_participants=stats['total_participants'],
+            seats_per_table=stats['seats_per_table']
+        )
+
+        # Если текущее количество раундов больше расчетного, используем его
+        # Это может произойти, если часть участников покинула сессию
+        if stats['total_rounds'] > total_rounds:
+            total_rounds = stats['total_rounds']
+        
         metrics_json = {
             "current_round": stats['total_rounds'],
             "total_rounds": total_rounds,
             "round_time_minutes": round_time,
             "break_time_minutes": break_time,
-            "strangers_num": stats['met_pairs'] if stats['met_pairs'] > 0 else 0
+            "strangers_num": stats['total_participants'] - stats['met_users']
         }
+
         try:
             requests.post(
                 url = self.base_url + "/metrics", 
@@ -98,7 +126,7 @@ class AppService:
             )
 
         except Exception as e:
-            print(f"[DEBUG] Не удалось отправить метрики: {e}")
+            print(f"[DEBUG] Не удалось отправить метрики: {e}: {metrics_json}")
 
     def start_session(self):
         requests.post(
