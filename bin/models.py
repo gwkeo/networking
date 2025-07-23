@@ -1,4 +1,5 @@
 import json
+from enum import Enum
 
 class Settings:
 
@@ -9,28 +10,50 @@ class Settings:
         self.break_time = break_time
 
 
+class UserState(Enum):
+    default = "DEFAULT"
+    waiting_for_name = "WAITING_FOR_NAME"
+    registered = "REGISTERED"
+    ready = "READY"
+
+
 class UserInfo:
     '''
     :param username: Имя пользователя
     :param table: Стол, за которым пользователь сидит
     :param message_id: ID последнего сообщения с номером стола
+    :param is_mock: Флаг, указывающий является ли пользователь моком
     '''
-    def __init__(self, username: str, table: int, message_id: int = None):
+    def __init__(self, table_num: int = 0, username: str = None, user_state : UserState = UserState.default.value, message_id: int = None, is_mock: bool = False):
         self.username = username
-        self.table = table
+        self.table_num = table_num
         self.message_id = message_id
+        self.is_mock = is_mock
+        self.user_state : UserState = user_state
 
-        if len(username.split(' ')) > 1:
-            self.initials = username.split(' ')[-1][0] + username.split(' ')[0][0]
-        else:
-            self.initials = username[0]
-    
+        if self.username != None:
+            if len(username.split(' ')) > 1:
+                self.initials = username.split(' ')[-1][0] + username.split(' ')[0][0]
+            else:
+                self.initials = username[0]
+
     def to_dict(self):
         return {
-            'name': self.username,
-            'initials': self.initials,
-            'table_index': self.table
+            "name": self.username,
+            "initials": self.initials,
+            "table_index": self.table_num,
+            "is_mock": self.is_mock
         }
+    
+    def is_ready(self) -> bool:
+        return True if self.user_state == UserState.ready.value else False
+
+class MockUserInfo(UserInfo):
+    '''
+    Класс для мок-пользователей, которые используются для тестирования
+    '''
+    def __init__(self, username: str, table_num: int = 0):
+        super().__init__(username=username, table_num=table_num, message_id=None, is_mock=True)
 
 
 class Metrics:
