@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import './Timer.css'
 
-const Timer = ({ round_time, break_time }) => {
+const Timer = ({ round_time, break_time, session_started }) => {
   // Устанавливаем начальное время в секундах
   const [timeLeft, setTimeLeft] = useState(round_time * 60); // Переводим минуты в секунды
   const [isRoundActive, setIsRoundActive] = useState(true);
 
+  // Сброс таймера при изменении round_time или session_started
   useEffect(() => {
+    setTimeLeft(round_time * 60);
+    setIsRoundActive(true);
+  }, [round_time, session_started]);
+
+  useEffect(() => {
+    if (!session_started) return; // Не запускать таймер, если сессия не началась
     const timerId = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
@@ -27,14 +34,18 @@ const Timer = ({ round_time, break_time }) => {
 
     // Очищаем интервал при размонтировании компонента
     return () => clearInterval(timerId);
-  }, [timeLeft, isRoundActive, round_time, break_time]);
+  }, [timeLeft, isRoundActive, round_time, break_time, session_started]);
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
   const seconds = String(timeLeft % 60).padStart(2, '0');
 
   return (
     <div className='metric-content'>
-      <a style={{ color: 'white', fontSize: '16px', }}>{isRoundActive ? 'До конца раунда осталось' : 'До конца перерыва осталось'}</a>
+      <a style={{ color: 'white', fontSize: '16px', }}>
+        {session_started
+          ? (isRoundActive ? 'До конца раунда осталось' : 'До конца перерыва осталось')
+          : 'Ожидание старта сессии...'}
+      </a>
       <a style={{ color: 'white', fontSize: '25px', }}>{minutes}:{seconds}</a>
     </div>
   );

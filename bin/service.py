@@ -40,7 +40,7 @@ class AppService:
             'Accept': 'application/json'
         }
 
-        request_body = json.dumps([{}])
+        request_body = json.dumps([])
 
         try:
             response = requests.post(
@@ -81,12 +81,8 @@ class AppService:
         self.clear_users()
         self.clear_metrics()
 
-    def send_metrics(self, stats, settings=None):
+    def send_metrics(self, stats, round_time, break_time):
         total_rounds = math.ceil((stats['total_participants']-1) / (stats['seats_per_table']-1)) if stats['total_participants'] > 1 and stats['seats_per_table'] > 1 else 1
-
-        # Используем настройки для времени, если они переданы
-        round_time = getattr(settings, 'round_time', 2) if settings else 2
-        break_time = getattr(settings, 'break_time', 1) if settings else 1
 
         metrics_json = {
             "current_round": stats['total_rounds'],
@@ -104,3 +100,12 @@ class AppService:
         except Exception as e:
             print(f"[DEBUG] Не удалось отправить метрики: {e}")
 
+    def start_session(self):
+        requests.post(
+            url = self.base_url + "/start"
+        )
+
+    def stop_session(self):
+        requests.post(
+            url = self.base_url + "/stop"
+        )

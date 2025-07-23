@@ -20,7 +20,7 @@ export default function Metric(props){
     return (
         <metric>
         <div className='metric'>
-                <Timer round_time={safeNumber(props.round_time_minutes)} break_time={safeNumber(props.break_time_minutes)} />
+                <Timer round_time={safeNumber(props.round_time_minutes)} break_time={safeNumber(props.break_time_minutes)} session_started={props.session_started} />
         </div>
         <div className='metric'>
             <div className='metric-content'>
