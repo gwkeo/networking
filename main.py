@@ -54,7 +54,7 @@ class AppContext:
         :return: (количество готовых, общее количество)
         """
         ready_users = len([user for user in self.users.values() 
-                          if user.user_state == models.UserState.ready.value])
+            if user.user_state == models.UserState.ready.value])
         return (ready_users, len(self.users))
 
     def are_all_users_ready(self) -> bool:
@@ -192,10 +192,17 @@ def handle_admin_buttons(message: types.Message):
             ctx.admin_chat_state = AdminState.change_tables_count.value
 
         case markups.AdminButtons.start_session.value:
-            ctx.session_started = False
+            
+            potentially_ready_users = [user_id for user_id, user_info in ctx.users.items() if user_info.user_state == models.UserState.registered.value or user_info.user_state == models.UserState.ready.value]
 
+            try:
+                ctx.app_service.stop_session()
+            except Exception as e:
+                print(f'[DEBUG] Error while stoping session timer: {str(e)}')
+
+            ctx.session_started = False
             ctx.session = session.SessionScheduler(
-                participants=list(ctx.users.keys()),  # Только реальные пользователи
+                participants=potentially_ready_users,
                 n=ctx.settings.tables_count,
                 m=ctx.settings.seats_count
             )
@@ -203,54 +210,61 @@ def handle_admin_buttons(message: types.Message):
             round_dict = ctx.session.generate_next_round()
             
             if round_dict is None:
-                bot.send_message(message.chat.id, texts.unable_to_start_session, reply_markup=markups.admin_main)
+                bot.send_message(
+                    chat_id=message.chat.id,
+                    text=texts.unable_to_start_session,
+                    reply_markup=markups.admin_main)
                 return
             
             for participant_id, table_num in round_dict.items():
                 user_info = ctx.users[participant_id]
                 user_info.table_num = table_num + 1
-                message_id = update_message_by_chat_and_message_id(
-                    bot=bot,
-                    message_id=user_info.message_id,
+                message_id = bot.send_message(
                     chat_id=participant_id,
-                    text=texts.show_users_current_table_num(round_num=1, table_num=table_num),
-                    keyboard=markups.user_ready
+                    text=texts.show_users_current_table_num(
+                        round_num=1,
+                        table_num=table_num),
+                    reply_markup=markups.user_ready
                 )
                 user_info.message_id = message_id
 
-            ready_count, total_count = ctx.get_ready_users_count()
             ctx.admin_chat_last_message_id = update_message(
                 bot=bot,
                 message=message,
                 text=texts.show_ready_users(
-                    count=ready_count,
-                    all_users=total_count
-                )
+                    count=0,
+                    all_users=len(potentially_ready_users)
+                ),
+                keyboard=markups.start_session_before_everyone_ready
             )
 
+            potentially_ready_users_info = [ctx.users[user_id] for user_id in potentially_ready_users]
+
             try:
-                # Обновляем информацию на сервере
-                all_users = {**ctx.users}
-                ctx.app_service.update_users(users=all_users)
+                ctx.app_service.update_users(users=potentially_ready_users_info)
             except Exception as e:
                 print(f"[DEBUG] {texts.unable_to_update_users(str(e))}")
 
             try:
-                ctx.app_service.send_metrics(ctx.session.get_session_stats(), round_time=ctx.settings.round_time, break_time=ctx.settings.break_time)
+                ctx.app_service.send_metrics(
+                    ctx.session.get_session_stats(), 
+                    round_time=ctx.settings.round_time,
+                    break_time=ctx.settings.break_time)
             except Exception as e:
+                bot.send_message(
+                    chat_id=ctx.admin_chat_id,
+                    text=f"{str(e)}:{ctx.session.get_session_stats()['total_rounds']}"
+                )
+                
                 print(f"[DEBUG] {texts.unable_to_update_metrics(str(e))}")
 
-
         case markups.AdminButtons.next_round.value:
+            for user_id, user_info in ctx.users.items():
+                if user_info.user_state == models.UserState.ready.value:
+                    ctx.session.add_participant(user_id)
+                    user_info.user_state = models.UserState.registered.value
 
-            try:
-                ctx.app_service.stop_session()
-            except Exception as e:
-                print(f'[DEBUG] Error while stoping session timer: {str(e)}')
-
-            if len(ctx.session.participants) != len(ctx.users):
-                ctx.session.add_participants(ctx.new_participants)
- 
+            potentially_ready_users = [user_id for user_id, user_info in ctx.users.items() if user_info.user_state == models.UserState.registered.value]
             round_dict = ctx.session.generate_next_round()
 
             if round_dict is None:
@@ -259,37 +273,43 @@ def handle_admin_buttons(message: types.Message):
                     text=texts.unable_to_start_next_round, 
                     reply_markup=markups.admin_main)
                 return
+
+            try:
+                ctx.app_service.stop_session()
+            except Exception as e:
+                print(f'[DEBUG] Error while stoping session timer: {str(e)}')
             
             round_num = len(ctx.session.rounds)
 
             for participant_id, table_num in round_dict.items():
                 ctx.update_user_table(participant_id, table_num + 1)
-                
-                if not ctx.is_mock_user(participant_id):
-                    print(ctx.users)
-                    user_info = ctx.get_user_info(participant_id)
-                    message_id = update_message_by_chat_and_message_id(
-                        bot=bot,
-                        message_id=user_info.message_id,
-                        chat_id=participant_id,
-                        text=texts.show_users_current_table_num(round_num=round_num, table_num=table_num),
-                        keyboard=markups.user_ready
-                    )
-                    user_info.message_id = message_id
+                user_info = ctx.users[participant_id]
+                message_id = update_message_by_chat_and_message_id(
+                    bot=bot,
+                    message_id=user_info.message_id,
+                    chat_id=participant_id,
+                    text=texts.show_users_current_table_num(
+                        round_num=round_num, 
+                        table_num=table_num
+                    ),
+                    keyboard=markups.user_ready
+                )
+                user_info.message_id = message_id
 
             # ctx.ready_users = set(ctx.mock_users.keys())  # Мок-пользователи всегда готовы
-            ctx.admin_chat_last_message_id = update_message(
-                bot=bot,
-                message=message,
+            ctx.admin_chat_last_message_id = bot.send_message(
+                chat_id=ctx.admin_chat_id,
                 text=texts.show_ready_users(
                     count=len(ctx.users),
                     all_users=len(ctx.session.participants)
-                )
+                ),
+                reply_markup=markups.start_session_before_everyone_ready
             )
 
+            potentially_ready_users_info = [ctx.users[user_id] for user_id in potentially_ready_users]
+
             try:
-                all_users = {**ctx.users}
-                ctx.app_service.update_users(users=all_users)
+                ctx.app_service.update_users(users=potentially_ready_users_info)
             except Exception as e:
                 print(f"[DEBUG] {texts.unable_to_update_users(str(e))}")
 
@@ -299,6 +319,7 @@ def handle_admin_buttons(message: types.Message):
                 print(f"[DEBUG] {texts.unable_to_update_metrics(str(e))}")
 
         case markups.AdminButtons.show_users.value:
+            ready_users = [user_id for user_id, user_info in ctx.users.items() if user_info.user_state == models.UserState.ready.value]
             update_message_by_chat_and_message_id(
                 bot=bot,
                 message_id=ctx.admin_chat_last_message_id,
@@ -385,6 +406,9 @@ def handle_message(message: types.Message):
                     return
                 bot.send_message(chat_id=message.chat.id, text=texts.change_seats_count)
                 ctx.admin_chat_state = AdminState.change_seats_count.value
+                if ctx.session_started:
+                    ctx.session.n = ctx.settings.tables_count
+
             case AdminState.change_seats_count.value:
                 try:
                     ctx.settings.seats_count = int(message.text)
@@ -393,6 +417,9 @@ def handle_message(message: types.Message):
                     return
                 bot.send_message(chat_id=message.chat.id, text=texts.change_round_time)
                 ctx.admin_chat_state = AdminState.change_round_time.value
+                if ctx.session_started:
+                    ctx.session.m = ctx.settings.seats_count
+
             case AdminState.change_round_time.value:
                 try:
                     ctx.settings.round_time = int(message.text)
@@ -405,6 +432,8 @@ def handle_message(message: types.Message):
                     reply_markup=markups.admin_main
                 )
                 ctx.admin_chat_state = AdminState.default.value
+            case AdminState.default.value:
+                pass
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callback_query(callback: types.CallbackQuery):
@@ -416,6 +445,14 @@ def handle_callback_query(callback: types.CallbackQuery):
     if user_id == ctx.admin_chat_id:
         match(data):
             case markups.CallbackTypes.admin_round_start.value:
+                ready_users = [user_id for user_id, user_info in ctx.users.items() if user_info.user_state == models.UserState.ready.value]
+                ready_users_info = [ctx.users[user_id] for user_id in ready_users]
+
+                try:
+                    ctx.app_service.update_users(users=ready_users_info)
+                except Exception as e:
+                    print(f"[DEBUG] {texts.unable_to_update_users(str(e))}")
+
                 message_id = update_message(
                     bot=bot,
                     message=callback.message,
@@ -424,13 +461,14 @@ def handle_callback_query(callback: types.CallbackQuery):
                 ctx.admin_chat_last_message_id = message_id
 
                 # Сообщение участникам
-                for participant_id, user_info in ctx.users.items():
+                for participant_id in ready_users:
                     message_id = update_message_by_chat_and_message_id(
                         bot=bot,
                         message_id=ctx.users[participant_id].message_id,
                         chat_id=participant_id,
                         text=texts.round_started
                     )
+
                     ctx.users[participant_id].message_id = message_id
 
                 ctx.session_started = True  # после первого раунда больше не показываем кнопку 'Старт'
@@ -485,6 +523,8 @@ def handle_callback_query(callback: types.CallbackQuery):
 
             # Авторассылка для новых участников во время сессии
             if ctx.session_started:
+                # # Добавляем участника в шедулер
+                # ctx.session.add_participant(user_id)
 
                 message_id = update_message_by_chat_and_message_id(
                     bot=bot,
@@ -532,6 +572,7 @@ def handle_callback_query(callback: types.CallbackQuery):
             ctx.users.pop(user_id)
 
         case markups.CallbackTypes.user_ready.value:
+            user_id = int(callback.message.chat.id)
 
             update_message(
                 bot=bot,
@@ -539,19 +580,25 @@ def handle_callback_query(callback: types.CallbackQuery):
                 text=callback.message.text
             )
 
-            ctx.users[callback.message.chat.id].user_state = models.UserState.ready.value
-            
-            ready_count, total_count = ctx.get_ready_users_count()
+            ctx.users[user_id].user_state = models.UserState.ready.value
+
+            ready_users = [user_id for user_id, user_info in ctx.users.items() if user_info.user_state == models.UserState.ready.value]
+            total_users = [user_id for user_id, user_info in ctx.users.items() if user_info.user_state == models.UserState.registered.value or user_info.user_state == models.UserState.ready.value]
+            bot.send_message(
+                chat_id=ctx.admin_chat_id,
+                text=f"Готовы: {ready_users} из {total_users}"
+            )
 
             message_id = update_message_by_chat_and_message_id(
                 bot=bot,
                 chat_id=ctx.admin_chat_id,
                 message_id=ctx.admin_chat_last_message_id,
-                text=texts.show_ready_users(ready_count, total_count)
+                text=texts.show_ready_users(len(ready_users), len(total_users)),
+                keyboard=markups.start_session_before_everyone_ready
             )
             ctx.admin_chat_last_message_id = message_id
 
-            if ctx.are_all_users_ready():
+            if ready_users == total_users:
                 if not ctx.session_started:
                     message_id = update_message_by_chat_and_message_id(
                         bot=bot,
@@ -568,10 +615,5 @@ def handle_callback_query(callback: types.CallbackQuery):
                         message_id=ctx.admin_chat_last_message_id,
                         text=texts.all_users_ready_next
                     )
-
-                    try:
-                        ctx.app_service.start_session()
-                    except Exception as e:
-                        print(f'[DEBUG]: error: {str(e)}')
 
 bot.infinity_polling()
