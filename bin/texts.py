@@ -47,7 +47,7 @@ def show_ready_users(count: int, all_users: int):
     return f"Готовы: {count} из {all_users}"
 
 def show_users_current_table_num(table_num: int, round_num: int = 1):
-    return f"Раунд {round_num}. Мега плюс вайб сигма бой, иди за стол {table_num + 1} для новых пикми знакомств)"
+    return f"Раунд {round_num}. Подходи к столу №{table_num + 1}"
 
 def welcome_admin(name: str):
     return f"Добро пожаловать в админ-панель"
