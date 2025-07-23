@@ -1,11 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json
-from bin.session import SessionScheduler
 from bin import models
-import threading
-import time
-
 # Загружаем конфигурацию
 try:
     with open('config.json', 'r') as config_file:
@@ -34,6 +30,9 @@ def update_users():
     try:
         data = request.get_json()
         if not data or not isinstance(data, list):
+            if data == []:
+                app_state.users = []
+                return jsonify({"message": f"Успешно"}), 200
             return jsonify({"error": "Неверный формат данных. Ожидается список пользователей"}), 400
         
         app_state.users = data
@@ -77,6 +76,24 @@ def get_metrics():
     except Exception as e:
         print(f"Ошибка при получении метрик: {e}")
         return jsonify({"error": f"Внутренняя ошибка сервера: {str(e)}"}), 500
+    
+@app.route('/api/ready', methods=['GET'])
+def get_ready():
+    try:
+        return jsonify({"session_started": app_state.session_started})
+    except Exception as e:
+        print(f"error: {str(e)}"), 200
+        return jsonify({"error": f"Внутренняя ошибка сервера: {str(e)}"}), 500
+
+@app.route('/api/start', methods=['POST', 'GET'])
+def start_session():
+    app_state.session_started = True
+    return jsonify({"message": "Сессия начата"}), 200
+    
+@app.route('/api/stop', methods=['POST', 'GET'])
+def stop_session():
+    app_state.session_started = False
+    return jsonify({"message": "Сессия остановлена"}), 200
 
 if __name__ == '__main__':
     print(f"Запуск сервера на {config['server']['host']}:{config['server']['port']}")
@@ -85,5 +102,8 @@ if __name__ == '__main__':
     print("  GET /api/users - получение списка пользователей")
     print("  POST /api/metrics - обновление метрик")
     print("  GET /api/metrics - получение метрик")
+    print("  GET /api/ready - получение статуса сессии")
+    print("  POST /api/start - начать сессию")
+    print("  POST /api/stop - остановить сессию")
     
     app.run(debug=True, host=config['server']['host'], port=config['server']['port'])
