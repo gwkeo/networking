@@ -73,6 +73,9 @@ start_session_inline = quick_markup({
     'Старт': {'callback_data': CallbackTypes.admin_round_start.value}
 }, row_width=1)
 
+start_session_before_everyone_ready = quick_markup({
+    'Стартовать сразу': {'callback_data': CallbackTypes.admin_round_start.value}
+}, row_width=1)
 
 if __name__ == "__main__":
     a = AdminButtons.to_array()
