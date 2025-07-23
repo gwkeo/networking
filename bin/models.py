@@ -33,7 +33,7 @@ class UserInfo:
 
         if self.username != None:
             if len(username.split(' ')) > 1:
-                self.initials = username.split(' ')[-1][0] + username.split(' ')[0][0]
+                self.initials = username.split(' ')[0][0] + username.split(' ')[-1][0]
             else:
                 self.initials = username[0]
 

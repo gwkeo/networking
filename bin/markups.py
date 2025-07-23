@@ -19,6 +19,7 @@ class AdminButtons(Enum):
     show_users = "Показать участников 👥"
     ideal_parameters = "Идеальные параметры 💡"
     finish_session = "Закончить сессию 🛑"
+    add_mock_users = "Добавить мок-пользователей 🤖"
 
     @classmethod
     def to_array(cls):
@@ -63,7 +64,8 @@ admin_main.add(
     types.KeyboardButton('Следующий раунд ⏭️'),
     types.KeyboardButton('Показать участников 👥'),
     types.KeyboardButton('Идеальные параметры 💡'),
-    types.KeyboardButton('Закончить сессию 🛑')
+    types.KeyboardButton('Закончить сессию 🛑'),
+    types.KeyboardButton('Добавить мок-пользователей 🤖')
 )
 
 start_session = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
