@@ -1,6 +1,7 @@
 import random
 import itertools
 from typing import List, Dict, Set, FrozenSet, Optional
+import math
 
 
 random_seed_num = 42
@@ -250,186 +251,23 @@ def split_evenly(lst, n):
     return [lst[i*k + min(i, m):(i+1)*k + min(i+1, m)] for i in range(n)]
 
 
-def generate_greedy_full_coverage_schedule(participants: List[int], n: int, m: int, attempts: int = 100, max_rounds_override: Optional[int] = None) -> List[Dict[int, int]]:
-    """
-    Генерирует полное расписание сессии (для обратной совместимости)
-    
-    :param participants: Список участников
-    :param n: Количество столов
-    :param m: Количество мест за столом
-    :param attempts: Количество попыток для поиска оптимальной рассадки
-    :param max_rounds_override: Максимальное количество раундов
-    :return: Список раундов
-    """
-    scheduler = SessionScheduler(participants, n, m)
-    
-    if max_rounds_override is not None:
-        max_rounds = max_rounds_override
-    else:
-        max_rounds = 10 * ((scheduler.p-1) // (m-1) + 2)
-    
-    for _ in range(max_rounds):
-        round_dict = scheduler.generate_next_round(attempts)
-        if round_dict is None:
-            break
-    
-    return scheduler.rounds
-
-
-# Пример использования:
-if __name__ == "__main__":
-    # Создаем планировщик сессии
-    participants = [1, 2, 3, 4, 5, 6, 7, 8]
-    scheduler = SessionScheduler(participants, n=3, m=4)
-    
-    print("Начальная сессия:")
-    print(f"Участники: {scheduler.participants}")
-    print(f"Столы: {scheduler.n}, мест за столом: {scheduler.m}")
-    
-    # Показываем начальное состояние
-    scheduler.print_coverage_debug()
-    
-    # Генерируем раунды по одному
-    round_num = 1
-    while True:
-        if round_num == 3:
-            print(f"\nДобавляем новых участников...")
-            scheduler.add_participants([9, 10])
-            print(f"Новые участники: {scheduler.participants}")
-            scheduler.print_coverage_debug()
-
-        round_dict = scheduler.generate_next_round()
-        if round_dict is None:
-            print(f"\nГенерация раундов завершена на раунде {round_num-1}")
-            break
-        
-        print(f"\nРаунд {round_num}:")
-        for participant, table in round_dict.items():
-            print(f"  Участник {participant} -> Стол {table}")
-        
-        stats = scheduler.get_session_stats()
-        print(f"Покрытие: {stats['coverage_percentage']:.2%}")
-        
-        round_num += 1
-    
-    print(f"\nФинальная статистика:")
-    final_stats = scheduler.get_session_stats()
-    for key, value in final_stats.items():
-        print(f"  {key}: {value}")
-    
-    # Показываем детальную информацию о покрытии
-    scheduler.print_coverage_debug()
-    
-    # Проверяем повторные встречи
-    scheduler.print_repeated_meetings_report()
-
-
-
-
-
-
-    # Создаем планировщик сессии
-    participants = [1, 2, 3, 4, 5, 6, 7, 8]
-    scheduler = SessionScheduler(participants, n=3, m=4)
-    
-    print("Начальная сессия:")
-    print(f"Участники: {scheduler.participants}")
-    print(f"Столы: {scheduler.n}, мест за столом: {scheduler.m}")
-    
-    # Генерируем раунды по одному
-    round_num = 1
-    while True:
-        if round_num == 2:
-            print(f"\nДобавляем новых участников...")
-            scheduler.add_participants([9, 10])
-            print(f"Новые участники: {scheduler.participants}")
-
-        round_dict = scheduler.generate_next_round()
-        if round_dict is None:
-            break
-        
-        print(f"\nРаунд {round_num}:")
-        for participant, table in round_dict.items():
-            print(f"  Участник {participant} -> Стол {table}")
-        
-        stats = scheduler.get_session_stats()
-        print(f"Покрытие: {stats['coverage_percentage']:.2%}")
-        
-        round_num += 1
-    
-    print(f"\nФинальная статистика:")
-    final_stats = scheduler.get_session_stats()
-    for key, value in final_stats.items():
-        print(f"  {key}: {value}")
-    
-    # Проверяем повторные встречи
-    scheduler.print_repeated_meetings_report()
-
-
-
-
-
-
-    # Создаем планировщик сессии
-    participants = [1, 2, 3, 4, 5, 6, 7, 8]
-    scheduler = SessionScheduler(participants, n=3, m=4)
-    
-    print("Начальная сессия:")
-    print(f"Участники: {scheduler.participants}")
-    print(f"Столы: {scheduler.n}, мест за столом: {scheduler.m}")
-    
-    # Генерируем раунды по одному
-    round_num = 1
-    while True:
-        if round_num == 3:
-            print(f"\nДобавляем новых участников...")
-            scheduler.add_participants([9, 10])
-            print(f"Новые участники: {scheduler.participants}")
-
-        round_dict = scheduler.generate_next_round()
-        if round_dict is None:
-            break
-        
-        print(f"\nРаунд {round_num}:")
-        for participant, table in round_dict.items():
-            print(f"  Участник {participant} -> Стол {table}")
-        
-        stats = scheduler.get_session_stats()
-        print(f"Покрытие: {stats['coverage_percentage']:.2%}")
-        
-        round_num += 1
-    
-    print(f"\nФинальная статистика:")
-    final_stats = scheduler.get_session_stats()
-    for key, value in final_stats.items():
-        print(f"  {key}: {value}")
-    
-    # Проверяем повторные встречи
-    scheduler.print_repeated_meetings_report()
-    
-    # Дополнительная проверка - создаем тестовый случай с повторами
-    print(f"\n=== ТЕСТ С ПОВТОРАМИ ===")
-    test_scheduler = SessionScheduler([1, 2, 3, 4], n=2, m=2)
-    
-    # Генерируем несколько раундов для маленькой группы
-    for i in range(5):
-        round_dict = test_scheduler.generate_next_round()
-        if round_dict is None:
-            break
-        print(f"Раунд {i+1}: {round_dict}")
-    
-    test_scheduler.print_repeated_meetings_report()
-
 def get_ideal_tables_and_seats(n):
-        best_tables = 1
-        best_seats = n
-        min_diff = n
-        for tables in range(1, n+1):
-            if n % tables == 0:
-                seats = n // tables
-                diff = abs(seats - tables)
-                if diff < min_diff:
-                    min_diff = diff
-                    best_tables = tables
-                    best_seats = seats
-        return best_tables, best_seats
+    if n <= 0:
+        return (0, 0)
+    best_tables = 1
+    best_seats = n
+    min_diff = n
+    for tables in range(1, n+1):
+        if n % tables == 0:
+            seats = n // tables
+            diff = abs(seats - tables)
+            if diff < min_diff:
+                min_diff = diff
+                best_tables = tables
+                best_seats = seats
+    return best_tables, best_seats
+
+def get_max_rounds(users_count: int, seats_count: int):
+    if users_count > 1 and seats_count > 1:
+        return math.ceil((users_count - 1) / (seats_count - 1))
+    return 1
