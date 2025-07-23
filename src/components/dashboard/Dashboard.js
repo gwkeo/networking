@@ -66,6 +66,8 @@ export default function Dashboard(props){
         return Math.min(maxBlocksPerPage, maxTableIndex - currentIndex);
     };
     
+    
+
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentBlockIndex((prevIndex) => {
@@ -144,7 +146,7 @@ export default function Dashboard(props){
                                     .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
                                     .map((person, index) => (
                                         <li className={classes.columnItem} key={index}>
-                                            <a className={classes.columnText}>{person.initials}</a>
+                                            <a className={classes.columnText}>{person.initials.toUpperCase()}</a>
                                         </li>
                                     ))}
                             </div>

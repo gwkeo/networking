@@ -22,3 +22,13 @@
     text-align: left;
     justify-content: space-between;  */
 }
+
+.metricsHeader {
+    color: white;
+    font-size: 18px;
+}
+
+.metricsValue {
+    color: white;
+    font-size: 34px;
+}

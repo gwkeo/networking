@@ -8,12 +8,21 @@ const Timer = ({ round_time, break_time, session_started }) => {
 
   // Сброс таймера при изменении round_time или session_started
   useEffect(() => {
+    if (!session_started) {
+      setTimeLeft(round_time * 60);
+      setIsRoundActive(true);
+      return;
+    }
     setTimeLeft(round_time * 60);
     setIsRoundActive(true);
   }, [round_time, session_started]);
 
   useEffect(() => {
-    if (!session_started) return; // Не запускать таймер, если сессия не началась
+    if (!session_started) {
+      setTimeLeft(round_time * 60);
+      return;
+    }
+
     const timerId = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime > 0) {
@@ -41,12 +50,12 @@ const Timer = ({ round_time, break_time, session_started }) => {
 
   return (
     <div className='metric-content'>
-      <a style={{ color: 'white', fontSize: '16px', }}>
+      <a className="metricsHeader">
         {session_started
           ? (isRoundActive ? 'До конца раунда осталось' : 'До конца перерыва осталось')
           : 'Ожидание старта сессии...'}
       </a>
-      <a style={{ color: 'white', fontSize: '25px', }}>{minutes}:{seconds}</a>
+      <a className="metricsValue">{minutes}:{seconds}</a>
     </div>
   );
 };

@@ -24,20 +24,20 @@ export default function Metric(props){
         </div>
         <div className='metric'>
             <div className='metric-content'>
-                <a style={{ color: 'white', fontSize: '16px', }}>Раунд</a>
-                <a style={{ color: 'white', fontSize: '25px', }}>{safeNumber(props.current_round)} / {safeNumber(props.total_rounds)}</a>
+                <a className="metricsHeader">Раунд</a>
+                <a className="metricsValue">{safeNumber(props.current_round)} / {safeNumber(props.total_rounds)}</a>
             </div>
         </div>
         <div className='metric'>
             <div className='metric-content'>
-                <a style={{ color: 'white', fontSize: '16px', }}>Участники</a>
-                <a style={{ color: 'white', fontSize: '25px', }}>{safeNumber(props.people_count)}</a>
+                <a className="metricsHeader">Участники</a>
+                <a className="metricsValue">{safeNumber(props.people_count)}</a>
             </div>
         </div>
         <div className='metric'>
             <div className='metric-content'>
-                <a style={{ color: 'white', fontSize: '16px', }}>Число незнакомых людей</a>
-                <a style={{ color: 'white', fontSize: '25px', }}>{safeNumber(props.strangers_num)}</a>
+                <a className="metricsHeader">Число незнакомых людей</a>
+                <a className="metricsValue">{safeNumber(props.strangers_num)}</a>
             </div>
         </div>
         </metric>

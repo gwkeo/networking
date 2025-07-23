@@ -26,7 +26,6 @@
 .headerTitle {
     color: white;
     font-size: 20px;
-    font-weight: bold;
 }
 
 .headerSubtitle {
@@ -37,8 +36,7 @@
 
 .blockTitle {
     color: white;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 24px;
     margin-bottom: 2vh;
 }
 
@@ -103,8 +101,7 @@
 }
 
 .columnHeader {
-    font-weight: bold;
-    font-size: 14px;
+    font-size: 18px;
     padding: 1vh; /* Добавляем padding со всех сторон */
     position: sticky;
     top: 0;
@@ -117,13 +114,12 @@
     list-style: none;
     color: white;
     margin: 0;  /* Убираем margin */
-    padding: 1vh 0.5vh; /* Добавляем padding вместо margin */
+    padding: 0.8vh 0.2vh; /* Добавляем padding вместо margin */
     border-bottom: 1px solid #444; /* Добавляем нижнюю границу */
 }
 
 .columnText {
-    font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* Добавляем стили для последней строки, чтобы убрать двойную границу */
