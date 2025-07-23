@@ -9,29 +9,32 @@ export default function Dashboard(props){
     const [people, setPeople] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [sessionStarted, setSessionStarted] = useState(false)
 
     // Объединенная функция для загрузки всех данных
     const fetchData = useCallback(async () => {
         try {
             setError(null)
-            
-            // Параллельно загружаем метрики и пользователей
-            const [metricsResponse, usersResponse] = await Promise.all([
+            // Параллельно загружаем метрики, пользователей и статус сессии
+            const [metricsResponse, usersResponse, readyResponse] = await Promise.all([
                 fetch(`${process.env.REACT_APP_API_URL}/metrics`),
-                fetch(`${process.env.REACT_APP_API_URL}/users`)
+                fetch(`${process.env.REACT_APP_API_URL}/users`),
+                fetch(`${process.env.REACT_APP_API_URL}/ready`)
             ])
 
-            if (!metricsResponse.ok || !usersResponse.ok) {
+            if (!metricsResponse.ok || !usersResponse.ok || !readyResponse.ok) {
                 throw new Error('Ошибка загрузки данных')
             }
 
-            const [metricsData, peopleData] = await Promise.all([
+            const [metricsData, peopleData, readyData] = await Promise.all([
                 metricsResponse.json(),
-                usersResponse.json()
+                usersResponse.json(),
+                readyResponse.json()
             ])
 
             setMetrics(metricsData)
             setPeople(peopleData)
+            setSessionStarted(!!readyData.session_started)
             setIsLoading(false)
         } catch (err) {
             console.error('Ошибка при загрузке данных:', err)
@@ -128,47 +131,48 @@ export default function Dashboard(props){
 
     return (
         <section className={classes.container}>
-            <div className={classes.dashboard}>
-                <div className={classes.dashboard_text}>
-                <a style={{color:'white', fontSize: '20px', fontWeight: 'bold'}}>Рассадка за столами</a>
-                <div style={{color:'#888', fontSize: '12px', marginTop: '5px'}}>Автообновление каждые 5 секунд</div>
-                </div>
-                <div style={{display: 'flex', flexDirection: 'row'}}>
-                <div className={classes.names}>
-                
+            <div className={classes.mainContainer}>
 
-                        <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
-                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>Мнемоника</a>
-                        {people
-                                .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
-                                .map((person, index) => (
-                                    <li style={{ listStyle: 'none' }} key={index}>
-                                        <a style={{fontWeight: 'bold', fontSize: '10px'}}>{person.initials}</a>
-                                    </li>
-                                ))}
-                        </div>
-                        <div className={classes.column} style={{borderRight: '1px solid #ccc'}}>
-                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>Участник</a>
-                        {people
-                                .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
-                                .map((person, index) => (
-                                    <li style={{ listStyle: 'none' }} key={index}>
-                                        <a style={{fontWeight: 'bold', fontSize: '10px'}}>{person.name}</a>
-                                    </li>
-                                ))}
-                        </div>
-                        <div className={classes.column}>
-                        <a style={{fontWeight: 'bold', fontSize: '12px'}}>Номер стола</a>
-                        {people
-                                .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
-                                .map((person, index) => (
-                                    <li style={{listStyle: 'none'}} key={index}>
-                                        <a style={{fontWeight: 'bold', fontSize: '10px'}}>{person.table_index}</a>
-                                    </li>
-                                ))}
+                <div className={classes.blocksContainer}>
+                    {/* Блок с участниками */}
+                    <div className={classes.peopleBlock}>
+                        <div className={classes.blockTitle}>Рассадка за столами</div>
+                        <div className={classes.peopleColumns}>
+                            <div className={classes.columnWithBorder}>
+                                <a className={classes.columnHeader}>Мнемоника</a>
+                                {people
+                                    .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
+                                    .map((person, index) => (
+                                        <li className={classes.columnItem} key={index}>
+                                            <a className={classes.columnText}>{person.initials}</a>
+                                        </li>
+                                    ))}
+                            </div>
+                            <div className={classes.columnWithBorder}>
+                                <a className={classes.columnHeader}>Участник</a>
+                                {people
+                                    .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
+                                    .map((person, index) => (
+                                        <li className={classes.columnItem} key={index}>
+                                            <a className={classes.columnText}>{person.name}</a>
+                                        </li>
+                                    ))}
+                            </div>
+                            <div className={classes.column}>
+                                <a className={classes.columnHeader}>Номер стола</a>
+                                {people
+                                    .filter(person => (person.table_index <= currentBlockIndex + 4)&&(person.table_index>currentBlockIndex))
+                                    .map((person, index) => (
+                                        <li className={classes.columnItem} key={index}>
+                                            <a className={classes.columnText}>{person.table_index}</a>
+                                        </li>
+                                    ))}
+                            </div>
                         </div>
                     </div>
-                    <div className={classes.tables}>
+                    {/* Блок с графикой столов */}
+                    <div className={classes.tablesBlock}>
+                        <div className={classes.blockTitleCentered}>Визуализация столов</div>
                         {Array.from({length: blocksToDisplay}).map((_, index) => {
                             const tableIndex = currentBlockIndex + 1 + index;
                             return (
@@ -179,7 +183,6 @@ export default function Dashboard(props){
                             );
                         })}
                     </div>
-
                 </div>
             </div>
             <div className={classes.metrics}>
@@ -190,6 +193,7 @@ export default function Dashboard(props){
                 people_count={people.length}
                 round_time_minutes={metrics.round_time_minutes}
                 break_time_minutes={metrics.break_time_minutes}
+                session_started={sessionStarted}
                 />           
             </div>
         </section>

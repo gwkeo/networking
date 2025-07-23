@@ -10,47 +10,116 @@
     flex-direction: column;
 }
 
-.tables {
+.mainContainer {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 37.5vw; 
+    flex-direction: column;
+    margin-top: 10vh;
+    margin-left: 3vw;
+    width: 75vw;
+    height: 87vh;
 }
 
-.names{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 37vw; 
+.headerContainer {
+    margin-bottom: 2vh;
+}
+
+.headerTitle {
     color: white;
-    text-align: left;
-    /* font-size: 11px; */
-    align-self: center;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.dashboard_text {
-    display: flex;
-    flex-direction: column;
-    margin: 1vh;
+.headerSubtitle {
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
 }
 
-.dashboard {
-    position: relative; 
+.blockTitle {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2vh;
+}
+
+.blockTitleCentered {
+    composes: blockTitle;
+    width: 100%;
+    text-align: center;
+}
+
+.blocksContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+    width: 100%;
+    height: 82.6vh; /* 4 метрики (19.4vh * 4 = 77.6vh) + 3 отступа между ними (3vh * 3 = 9vh) - 4vh компенсация отступа = 82.6vh */
+}
+
+.peopleBlock {
+    background: #25272F;
+    border-radius: 10px;
+    padding: 2vh 2vw;
+    width: 32vw;
     display: flex;
     flex-direction: column;
-    top: 10vh;
-    margin-left: 3vw; 
-    width: 75vw; 
-    height: 87vh;          /* Устанавливаем высоту элемента */
-    background-color: #25272F; /* Устанавливаем цвет фона */
-    border-radius: 10px; 
+    height: 100%;
+}
+
+.peopleColumns {
+    display: flex;
+    flex-direction: row;
+    gap: 2vw;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .column {
     display: flex;
     flex-direction: column;
     text-align: center;
-    padding-left: 2.5vw; 
+    padding-left: 2.5vw;
     padding-right: 2.5vw;
-    overflow: hidden
-  }
+    color: white;
+    height: 100%;
+}
+
+.columnWithBorder {
+    composes: column;
+    border-right: 1px solid #444;
+}
+
+.columnHeader {
+    font-weight: bold;
+    font-size: 12px;
+    padding-bottom: 1vh;
+    position: sticky;
+    top: 0;
+    background: #25272F;
+    z-index: 1;
+}
+
+.columnItem {
+    list-style: none;
+    color: white;
+    margin: 0.5vh 0;
+}
+
+.columnText {
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.tablesBlock {
+    background: #25272F;
+    border-radius: 10px;
+    padding: 2vh 2vw;
+    width: 35vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100%;
+    overflow-y: auto;
+}
