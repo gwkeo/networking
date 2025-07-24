@@ -1,6 +1,6 @@
 from bin import models
 
-start = "Нажмите на кнопку для регистрации на нетворкинг сессию"
+start = "Нажмите на кнопку для регистрации на нетворкинг сессию\n\nНажимая на кнопку, вы соглашаетесь на предоставление персональных данных"
 registration_request_sent = 'Ваша заявка будет рассмотрена администратором. Пожалуйста, подождите'
 session_already_started = "Сессия уже началась, регистрация закрыта"
 user_left_session = "Вы покинули нетворкинг сессию"
@@ -14,6 +14,7 @@ unavailable_session = "Сессия недоступна"
 unable_to_start_session = "Не удалось начать сессию"
 unable_to_start_next_round = "Не удалось начать следующий раунд"
 round_started = "Раунд начался!"
+round_started_without_you = "Раунд начался без вас, так как вы не успели отметиться готовым. Ожидайте следующего раунда."
 no_users_to_remove = "Нет участников для удаления"
 enter_name_surname = "Пожалуйста, введите ваше имя и фамилию (через пробел):"
 session_finished = "Сессия завершена. Все данные сброшены."
@@ -47,7 +48,7 @@ def show_ready_users(count: int, all_users: int):
     return f"Готовы: {count} из {all_users}"
 
 def show_users_current_table_num(table_num: int, round_num: int = 1):
-    return f"Раунд {round_num}. Подходи к столу №{table_num + 1}\n"
+    return f"Раунд {round_num}. Подходите к столу №{table_num + 1}\n"
 
 def welcome_admin(name: str):
     return f"Добро пожаловать в админ-панель"

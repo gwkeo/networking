@@ -5,17 +5,12 @@
     width: 100vw;
 }
 
-.metrics {
-    display: flex;
-    flex-direction: column;
-}
-
 .mainContainer {
     display: flex;
     flex-direction: column;
     margin-top: 10vh;
     margin-left: 3vw;
-    width: 75vw;
+    width: 94vw;  /* Увеличиваем ширину, так как убрали метрики */
     height: 87vh;
 }
 
@@ -51,14 +46,14 @@
     flex-direction: row;
     gap: 2vw;
     width: 100%;
-    height: 82.6vh; /* 4 метрики (19.4vh * 4 = 77.6vh) + 3 отступа между ними (3vh * 3 = 9vh) - 4vh компенсация отступа = 82.6vh */
+    height: 82.6vh;
 }
 
 .peopleBlock {
     background: #25272F;
     border-radius: 10px;
     padding: 2vh 2vw;
-    width: 32vw;
+    width: 45%;  /* Увеличиваем ширину блока с участниками */
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -67,11 +62,11 @@
 .peopleColumns {
     display: flex;
     flex-direction: row;
-    gap: 0; /* Убираем gap, так как будем использовать бордеры */
+    gap: 0;
     height: 100%;
     overflow-y: auto;
-    border-top: 1px solid #444; /* Добавляем верхнюю границу */
-    border-left: 1px solid #444; /* Добавляем левую границу */
+    border-top: 1px solid #444;
+    border-left: 1px solid #444;
 }
 
 .column {
@@ -82,47 +77,44 @@
     padding-right: 1vw;
     color: white;
     height: 100%;
-    border-right: 1px solid #444; /* Добавляем правую границу для всех колонок */
+    border-right: 1px solid #444;
 }
 
-/* Колонка с именем участника */
 .columnWithBorder {
     composes: column;
-    flex: 3; /* Даем больше места для имени */
+    flex: 3;
 }
 
-/* Отдельные стили для узких колонок */
 .columnSmall {
     composes: column;
-    flex: 1; /* Узкая колонка */
-    max-width: 4vw; /* Ограничиваем максимальную ширину */
+    flex: 1;
+    max-width: 4vw;
     padding-left: 0.5vw;
     padding-right: 0.5vw;
 }
 
 .columnHeader {
     font-size: 18px;
-    padding: 1vh; /* Добавляем padding со всех сторон */
+    padding: 1vh;
     position: sticky;
     top: 0;
     background: #25272F;
     z-index: 1;
-    border-bottom: 1px solid #444; /* Добавляем нижнюю границу */
+    border-bottom: 1px solid #444;
 }
 
 .columnItem {
     list-style: none;
     color: white;
-    margin: 0;  /* Убираем margin */
-    padding: 0.8vh 0.2vh; /* Добавляем padding вместо margin */
-    border-bottom: 1px solid #444; /* Добавляем нижнюю границу */
+    margin: 0;
+    padding: 0.8vh 0.2vh;
+    border-bottom: 1px solid #444;
 }
 
 .columnText {
-    font-size: 12px;
+    font-size: 14px;  /* Увеличиваем размер текста */
 }
 
-/* Добавляем стили для последней строки, чтобы убрать двойную границу */
 .columnItem:last-child {
     border-bottom: none;
 }
@@ -130,14 +122,14 @@
 .tablesBlock {
     background: #25272F;
     border-radius: 10px;
-    padding: 2vh 1.5vw; /* Немного уменьшаем горизонтальный padding */
-    width: 35vw;
+    padding: 2vh 1.5vw;
+    width: 55%;  /* Увеличиваем ширину блока со столами */
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-start;
-    justify-content: space-around; /* Меняем на space-around для более гибкого распределения */
-    gap: 1vh 0.25vw; /* Уменьшаем горизонтальный gap */
+    justify-content: space-around;
+    gap: 2vh 2vw;  /* Увеличиваем отступы между столами */
     height: 100%;
     overflow-y: auto;
     align-content: flex-start;

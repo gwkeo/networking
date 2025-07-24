@@ -190,7 +190,7 @@ class SessionScheduler:
         if len(self.rounds) >= self._max_rounds:
             print(f"DEBUG: Достигнуто максимальное количество раундов ({self._max_rounds})")
             return None
-
+            
         all_pairs = self.get_all_pairs()
         
         # Если все пары уже встретились, возвращаем None
@@ -232,14 +232,14 @@ class SessionScheduler:
                 
                 # Если нашли идеальную конфигурацию, останавливаемся
                 unpaired = self._get_unpaired_participants()
-                new_pairs = set()
-                for table in tables:
-                    for i in range(len(table)):
-                        for j in range(i+1, len(table)):
-                            pair = frozenset([table[i], table[j]])
-                            if pair not in self.met_pairs:
-                                new_pairs.add(pair)
-                
+            new_pairs = set()
+            for table in tables:
+                for i in range(len(table)):
+                    for j in range(i+1, len(table)):
+                        pair = frozenset([table[i], table[j]])
+                        if pair not in self.met_pairs:
+                            new_pairs.add(pair)
+            
                 if all(pair in new_pairs for pair in unpaired):
                     break
         

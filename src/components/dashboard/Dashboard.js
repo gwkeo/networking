@@ -1,40 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import classes from "./Dashboard.module.css"
-import Metric from "../metrics/Metrics";
 import Table from "../tables/Table";
 
 export default function Dashboard(props){
     const maxBlocksPerPage = 4;//на экране максимально можно отобразить 4 стола
-    const [metrics, setMetrics] = useState({})
     const [people, setPeople] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [sessionStarted, setSessionStarted] = useState(false)
 
     // Объединенная функция для загрузки всех данных
     const fetchData = useCallback(async () => {
         try {
             setError(null)
-            // Параллельно загружаем метрики, пользователей и статус сессии
-            const [metricsResponse, usersResponse, readyResponse] = await Promise.all([
-                fetch(`${process.env.REACT_APP_API_URL}/metrics`),
-                fetch(`${process.env.REACT_APP_API_URL}/users`),
-                fetch(`${process.env.REACT_APP_API_URL}/ready`)
-            ])
+            // Загружаем только пользователей
+            const usersResponse = await fetch(`${process.env.REACT_APP_API_URL}/users`)
 
-            if (!metricsResponse.ok || !usersResponse.ok || !readyResponse.ok) {
+            if (!usersResponse.ok) {
                 throw new Error('Ошибка загрузки данных')
             }
 
-            const [metricsData, peopleData, readyData] = await Promise.all([
-                metricsResponse.json(),
-                usersResponse.json(),
-                readyResponse.json()
-            ])
-
-            setMetrics(metricsData)
+            const peopleData = await usersResponse.json()
             setPeople(peopleData)
-            setSessionStarted(!!readyData.session_started)
             setIsLoading(false)
         } catch (err) {
             console.error('Ошибка при загрузке данных:', err)
@@ -66,8 +52,6 @@ export default function Dashboard(props){
         return Math.min(maxBlocksPerPage, maxTableIndex - currentIndex);
     };
     
-    
-
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentBlockIndex((prevIndex) => {
@@ -134,7 +118,6 @@ export default function Dashboard(props){
     return (
         <section className={classes.container}>
             <div className={classes.mainContainer}>
-
                 <div className={classes.blocksContainer}>
                     {/* Блок с участниками */}
                     <div className={classes.peopleBlock}>
@@ -186,17 +169,6 @@ export default function Dashboard(props){
                         })}
                     </div>
                 </div>
-            </div>
-            <div className={classes.metrics}>
-                <Metric  key={1} 
-                strangers_num={metrics.strangers_num}
-                current_round={metrics.current_round}
-                total_rounds={metrics.total_rounds}
-                people_count={people.length}
-                round_time_minutes={metrics.round_time_minutes}
-                break_time_minutes={metrics.break_time_minutes}
-                session_started={sessionStarted}
-                />           
             </div>
         </section>
     )
